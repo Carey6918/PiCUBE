@@ -12,7 +12,9 @@ var sqlite = require('sqlite3');
 var db = new sqlite.Database(file);
 
 
-/* GET home page. */
+/**
+ * 这是我自己写的界面跳转，res.render是界面跳转语句
+ */
 router.get('/login', function(req, res,next) {
     console.log(req.query);
     console.log("调用到Login");

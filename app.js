@@ -5,9 +5,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+//每次新建一个routes里的js都要在这里加一个路径
 var index = require('./routes/index');
 var helloRouter = require('./routes/hello')
 var login = require('./routes/login');
+
 var app = express();
 
 // view engine setup
@@ -22,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//这里也要加一个
 app.use('/', index);
 app.use('/hello',helloRouter)
 app.use('/login',login)

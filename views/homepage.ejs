@@ -1,14 +1,19 @@
 <!--这是点了登录以后会跳转的首页-->
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style type="text/css">
+        a{margin-left: 20px; text-decoration: none;}
+        a:hover{text-decoration: underline;}
+    </style>
 </head>
 <body>
-<p>HERE IS Homepage</p>
-
-<p></p>
+<h1>Your name:   <%- user %></h1>
+<p>Welcome to your home ~</p>
+<p><a href="/user/logout">我要注销 </a>
+</p>
 </body>
 </html>

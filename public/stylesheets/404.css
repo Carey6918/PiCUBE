@@ -1,0 +1,93 @@
+body {
+    background-color: #f7f7f7;
+}
+
+.logo {
+    padding: 25px 0 35px;
+    text-align: center;
+}
+
+a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline
+}
+
+html {
+    line-height: 1
+}
+
+ol, ul {
+    list-style: none
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+caption, td, th {
+    text-align: left;
+    font-weight: 400;
+    vertical-align: middle
+}
+
+blockquote, q {
+    quotes: none
+}
+
+blockquote:after, blockquote:before, q:after, q:before {
+    content: "";
+    content: none
+}
+
+a img {
+    border: none
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+    display: block
+}
+
+.fof {
+    align-items: center;
+    background: url('/images/404/bg.svg') center repeat-x #161c21;
+    -webkit-background-size: 1117px 832px;
+    -moz-background-size: 1117px 832px;
+    -o-background-size: 1117px 832px;
+    background-size: 1117px 832px;
+    display: flex;
+    height: 400px;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    width: 100%
+}
+
+.fof-text {
+    color: #fff;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 22px;
+    text-align: center;
+    -webkit-font-smoothing: antialiased
+}
+
+.fof-text h1 {
+    color: #6ab4b5;
+    font-size: 70px;
+    font-weight: 700;
+    margin-bottom: 10px
+}
+
+.fof-text a {
+    color: #238b9b;
+    text-decoration: none
+}
+
+.fof-text a:focus, .fof-text a:hover {
+    color: #2cb0c5;
+    text-decoration: underline
+}

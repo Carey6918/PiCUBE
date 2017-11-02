@@ -31,10 +31,11 @@ router.get('/login', function(req, res,next) {
                 //    res.redirect("/login");
             }else{                                     //信息匹配成功，则将此对象（匹配到的user) 赋给session.user  并返回成功
                 req.session.user = rows[0].userid;
+               // console.log(req.session.user);
                // res.send(200);
                 //    res.redirect("/home");
-                res.render('homepage', {title:'..'});
-               // res.redirect('homepage');
+                //res.render('homepage', {title:'..'});
+                res.redirect('/homepage');
             }
         }
     });
@@ -64,7 +65,8 @@ router.get('/register', function(req, res,next) {
                         } else {
                             //callback(null);
                             req.session.user = req.query.username;
-                            res.render('homepage', {title: 'Homepage'});
+                            console.log(req.session.user);
+                            res.redirect('/homepage');
 
                         }
                     });

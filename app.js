@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var helloRouter = require('./routes/hello')
 var user = require('./routes/user');
+var homepage = require('./routes/homepage');
 
 var app = express();
 app.use(session({
@@ -42,9 +43,9 @@ app.use(function (req, res, next) {
 });
 //这里也要加一个
 app.use('/', index);
-app.use('/hello', helloRouter)
-app.use('/user', user)
-
+app.use('/hello', helloRouter);
+app.use('/user', user);
+app.use('/homepage', homepage);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');

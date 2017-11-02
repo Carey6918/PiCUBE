@@ -21,7 +21,14 @@
     <link rel="stylesheet" href="/stylesheets/homepage/responsive.css" />
     <link rel="stylesheet" href="/stylesheets/homepage/spacings.css" />
     <link rel="stylesheet" href="/stylesheets/homepage/animate.min.css" />
+    <link rel="stylesheet" href="/stylesheets/webuploader.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/webuploader_main.css" />
 
+    <script>
+        function Handle(){
+
+        }
+    </script>
 </head>
 
 <body class="relative">
@@ -240,13 +247,23 @@
                         <!-- large post -->
                         <article class="entry-item large-post">
 
-                            <div class="entry-header">
-                                <a href="#" class="entry-category">Lifestyle</a>
-                                <h2 class="entry-title">
-                                    <a href="blog-single.html">Natural Summer</a>
-                                </h2>
+                            <div id="uploader">
+                                <div class="queueList">
+                                    <div id="dndArea" class="placeholder">
+                                        <div id="filePicker"></div>
+                                        <p style="    font-size: 13px;margin-bottom: 30px;">或将照片拖到这里，单次最多可选300张</p>
+                                    </div>
+                                </div>
+                                <div class="statusBar" style="display:none;">
+                                    <div class="progress">
+                                        <span class="text">0%</span>
+                                        <span class="percentage"></span>
+                                    </div><div class="info"></div>
+                                    <div class="btns">
+                                        <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                                    </div>
+                                </div>
                             </div>
-
                             <div class="entry-img">
                                 <a href="blog-single.html">
                                     <img src="img/featured_post.jpg" alt="">
@@ -599,11 +616,7 @@
                                     </a>
                                 </li>
                             </ul>
-                            <div class="row mt-20">
-                                <div class="col-md-12 text-center">
-                                    <a href="#" class="btn btn-md btn-stroke" id="load-more">上传照片</a>
-                                </div>
-                            </div>
+
                         </div>
 
                         <!-- Newsletter -->
@@ -788,7 +801,8 @@
 <script type="text/javascript" src="/javascripts/plugins.js"></script>
 <!--<script type="text/javascript" src="/javascripts/twitterFetcher_min.js"></script>-->
 <script type="text/javascript" src="/javascripts/scripts.js"></script>
-
+<script type="text/javascript" src="/javascripts/webuploader.min.js"></script>
+<script type="text/javascript" src="/javascripts/webuploader.js"></script>
 <!-- Instafeed -->
 <script type="text/javascript">
     $(window).load(function() {
@@ -822,5 +836,3 @@
 
 </body>
 </html>
-
-<h1>Your name:   <%- user %></h1>

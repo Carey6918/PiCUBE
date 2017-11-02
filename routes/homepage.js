@@ -26,7 +26,6 @@ router.get('/', function(req, res, next) {
                 var followNums = rows[0].followNums;
                 var recordNums = rows[0].recordNums;
                 res.render('homepage', { fansNums: fansNums ,followNums:followNums,recordNums:recordNums });
-                console.log(followNums);
                 }
             }
     });

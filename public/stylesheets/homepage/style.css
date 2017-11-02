@@ -2153,7 +2153,7 @@ header.transparent .navbar-toggle .icon-bar {
 }
 
 .sidebar {
-  width: 30%;
+  width: 350px;
 }
 
 .sidebar:not(.left-sidebar) {
@@ -4499,5 +4499,20 @@ input[type="email"].newsletter-input:focus {
     display: none;
   }
 }
-
-/*# sourceMappingURL=style.css.map */
+.user_atten{
+  margin-left: 45px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+}
+.user_atten li{
+  float:left;
+  width:70px;
+  text-align:center;
+}
+.sidebar .widget a{
+  color:black;
+}
+.sidebar .widget a:hover{
+  color:#c0945c;
+  cursor:pointer;
+}

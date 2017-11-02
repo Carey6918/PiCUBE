@@ -274,23 +274,6 @@
                                             </li>
                                         </ul>
 
-                                        <div class="social-icons right">
-                                            <a href="#">
-                                                <i class="fa fa-instagram"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa fa-facebook"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa fa-twitter"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa fa-pinterest-p"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa fa-heart"></i>
-                                            </a>
-                                        </div>
                                     </div>
 
                                 </div>
@@ -594,29 +577,53 @@
                             <div class="heading-lines">
                                 <h3 class="widget-title heading">About Me</h3>
                             </div>
-                            <img src="img/about_me.jpg" alt="">
-                            <p class="mb-20 mt-30">A personal diary of wanderlust and an overflowing wardrobe. Live with passion.</p>
-                            <img src="img/signature.png" alt="">
+                            <img src="/images/icon/1.png" alt="">
+                            <p class="mb-20 mt-20">
+                                <a style="    font-family: 'Raleway', sans-serif;font-size: 20px;cursor:hand"><%- user %></a></p>
+                            <ul class="user_atten clearfix ">
+                                <li class="S_line1">
+                                    <a bpfilter="page_frame" href="/1987335911/follow?rightmod=1&amp;wvr=6" class="S_txt1">
+                                        <strong node-type="follow"><%- followNums %></strong><br>
+                                        <span class="S_txt2">关注</span>
+                                    </a>
+                                </li>
+                                <li class="S_line1">
+                                    <a bpfilter="page_frame" href="/1987335911/fans?rightmod=1&amp;wvr=6" class="S_txt1">
+                                        <strong node-type="fans"><%- fansNums %></strong><br>
+                                        <span class="S_txt2">粉丝</span>
+                                    </a></li>
+                                <li class="S_line1">
+                                    <a bpfilter="page_frame" href="/1987335911/profile?rightmod=1&amp;wvr=6&amp;mod=personnumber" class="S_txt1">
+                                        <strong node-type="weibo"><%- recordNums%></strong><br>
+                                        <span class="S_txt2">微博</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="row mt-20">
+                                <div class="col-md-12 text-center">
+                                    <a href="#" class="btn btn-md btn-stroke" id="load-more">上传照片</a>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Newsletter -->
-                        <div class="widget newsletter">
-                            <div class="heading-lines">
-                                <h3 class="widget-title heading">Newsletter</h3>
-                            </div>
-                            <form class="relative newsletter-form">
-                                <input type="email" placeholder="Your email address">
-                            </form>
-                            <input type="submit" value="Subscribe" id="submit-button" class="btn btn-lg btn-color">
-                        </div>
+                        <!--<div class="widget newsletter">-->
+                            <!--<div class="heading-lines">-->
+                                <!--<h3 class="widget-title heading">Newsletter</h3>-->
+                            <!--</div>-->
+                            <!--<form class="relative newsletter-form">-->
+                                <!--<input type="email" placeholder="Your email address">-->
+                            <!--</form>-->
+                            <!--<input type="submit" value="Subscribe" id="submit-button" class="btn btn-lg btn-color">-->
+                        <!--</div>-->
 
                         <!-- Instagram Feed Grid -->
-                        <div class="widget instagram">
-                            <div class="heading-lines">
-                                <h3 class="widget-title heading">Instagram</h3>
-                            </div>
-                            <ul id="instafeed-grid"></ul>
-                        </div>
+                        <!--<div class="widget instagram">-->
+                            <!--<div class="heading-lines">-->
+                                <!--<h3 class="widget-title heading">Instagram</h3>-->
+                            <!--</div>-->
+                            <!--<ul id="instafeed-grid"></ul>-->
+                        <!--</div>-->
 
                         <!-- Categories -->
                         <div class="widget categories">
@@ -747,38 +754,7 @@
         </section> <!-- end content -->
 
 
-        <!-- Instagram Feed -->
-        <div class="instagram-feed text-center">
-            <h3 class="heading uppercase">Instagram</h3>
-            <h5 class="heading uppercase mb-30">follow @soho</h5>
-            <ul id="instafeed-row"></ul>
-        </div>
 
-
-        <div class="widget-social">
-            <div class="social-icons text-center">
-                <a href="#">
-                    <i class="fa fa-instagram"></i>
-                    <span>instagram</span>
-                </a>
-                <a href="#">
-                    <i class="fa fa-facebook"></i>
-                    <span>facebook</span>
-                </a>
-                <a href="#">
-                    <i class="fa fa-twitter"></i>
-                    <span>twitter</span>
-                </a>
-                <a href="#">
-                    <i class="fa fa-pinterest-p"></i>
-                    <span>pinterest</span>
-                </a>
-                <a href="#">
-                    <i class="fa fa-rss"></i>
-                    <span>rss</span>
-                </a>
-            </div>
-        </div>
 
 
         <!-- Footer Type-1 -->
@@ -789,7 +765,7 @@
 
                         <div class="col-sm-12 copyright text-center">
                 <span>
-                  Copyright &copy; 2017.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>
+                  Copyright &copy; 2017.PiCUBE All rights reserved.
                 </span>
                         </div>
 

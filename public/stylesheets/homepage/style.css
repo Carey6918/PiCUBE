@@ -4516,3 +4516,26 @@ input[type="email"].newsletter-input:focus {
   color:#c0945c;
   cursor:pointer;
 }
+.imgWrap{
+  position: relative;
+  /* z-index: 1; */
+  line-height: 110px;
+  vertical-align: middle;
+  margin: 0 auto;
+  overflow: hidden;
+  width: 200px;
+  height: 200px;
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webit-transition: 200ms ease-out;
+  -moz-transition: 200ms ease-out;
+  -o-transition: 200ms ease-out;
+  -ms-transition: 200ms ease-out;
+  transition: 200ms ease-out;
+}
+.imgWrap img{
+  width:100%;
+}

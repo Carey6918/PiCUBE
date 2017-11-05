@@ -53,6 +53,7 @@ router.get('/register', function(req, res,next) {
             if (rows.length != 0) {
                 exist = true;
                 console.log(exist);
+                res.json({error:true});
                 //TODO 有没有更好的变现方式。
             } else {
                 db.run("INSERT INTO User (userid, password) " + "VALUES (?, ?);",

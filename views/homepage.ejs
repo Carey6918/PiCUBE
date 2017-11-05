@@ -28,6 +28,53 @@
         function Handle(){
 
         }
+        window.onload=function(){
+            //要初始化的东西
+            $.ajax({
+                url: 'upload/headline',
+                type: 'post',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                success: function (data) {
+//                  console.log(data.record.length);
+                    var pic = new Array();
+                    for(var i = 0; i < data.record.length;i++){
+                        document.getElementById("content"+(i+1).toString()).innerHTML = data.record[i].content;
+                        document.getElementById("time"+(i+1).toString()).innerHTML = data.record[i].createTime;
+                        getPics(data.record[i].recordid,pic,i);
+                        console.log(pic);
+                        document.getElementById("img"+(i+1).toString()).src = pic[i].path;
+                        document.getElementById("tag"+(i+1).toString()).innerHTML = pic[i].tag;
+                    }
+//                    document.getElementById("img1").src="../../database/images/20151122075121_ijHE2.jpeg"
+                },
+                error: function (){
+                    console.log("x");
+//                    alert("初始化最近的消息失败！");
+                }
+            });
+        }
+        function getPics(val,res,i){
+            $.ajax({
+                url: 'upload/headlinepic',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data:{recordid: val},
+                success: function (data) {
+                    res[i] = data.pic;
+//                    console.log(data.pic);
+                },
+                error: function(){
+                    console.log("ree");
+                }
+            });
+        }
+
+
+
     </script>
 </head>
 
@@ -128,7 +175,7 @@
             </div> <!-- end navigation -->
         </nav> <!-- end navbar -->
     </header>
-
+    <!--logo-->
     <section class="header-wrap hero-section bg-light">
         <div class="container">
             <div class="logo-container text-center">
@@ -156,13 +203,30 @@
 
                     <div class="gallery-cell">
                         <article>
-                            <a href="blog-single.html" class="entry-img">
-                                <img src="img/main_slide_1.jpg" alt="">
-                                <span class="entry-category">Travel</span> <!--这里写图片标签-->
+                            <a href="" class="entry-img">
+                                <p class="imgWrap">
+                                <img id="img1"  alt="">
+                                </p>
+                                <span id="tag1" class="entry-category">Travel</span> <!--这里写图片标签-->
                             </a>
                             <div class="entry text-center">
-                                <h4 class="entry-title uppercase"><a href="blog-single.html">revolve in mexico</a></h4>
-                                <span class="entry-date">Jul 14, 2016</span>
+                                <h4 id="content1" class="entry-title uppercase"><a href="blog-single.html">revolve in mexico</a></h4>
+                                <span id="time1" class="entry-date">Jul 14, 2016</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="gallery-cell">
+                        <article>
+                            <a href="" class="entry-img">
+                                <p class="imgWrap">
+                                    <img id="img2"  alt="">
+                                </p>
+                                <span id="tag2" class="entry-category">Travel</span>
+                            </a>
+                            <div class="entry text-center">
+                                <h4 id="content2" class="entry-title uppercase"><a href="blog-single.html">Vinez Boat Ride</a></h4>
+                                <span id="time2" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
                     </div>
@@ -170,12 +234,14 @@
                     <div class="gallery-cell">
                         <article>
                             <a href="blog-single.html" class="entry-img">
-                                <img src="img/main_slide_2.jpg" alt="">
-                                <span class="entry-category">Travel</span>
+                                <p class="imgWrap">
+                                    <img id="img3"  alt="">
+                                </p>
+                                <span id="tag3" class="entry-category">Lifestyle</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 class="entry-title uppercase"><a href="blog-single.html">Vinez Boat Ride</a></h4>
-                                <span class="entry-date">Jul 14, 2016</span>
+                                <h4 id="content3" class="entry-title uppercase"><a href="blog-single.html">Welcome Cannes</a></h4>
+                                <span id="time3" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
                     </div>
@@ -183,12 +249,14 @@
                     <div class="gallery-cell">
                         <article>
                             <a href="blog-single.html" class="entry-img">
-                                <img src="img/main_slide_3.jpg" alt="">
-                                <span class="entry-category">Lifestyle</span>
+                                <p class="imgWrap">
+                                    <img id="img4"  alt="">
+                                </p>
+                                <span id="tag4" class="entry-category">Beauty</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 class="entry-title uppercase"><a href="blog-single.html">Welcome Cannes</a></h4>
-                                <span class="entry-date">Jul 14, 2016</span>
+                                <h4 id="content4" class="entry-title uppercase"><a href="blog-single.html">Elegant &amp; Neutral</a></h4>
+                                <span id="time4" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
                     </div>
@@ -196,42 +264,31 @@
                     <div class="gallery-cell">
                         <article>
                             <a href="blog-single.html" class="entry-img">
-                                <img src="img/main_slide_4.jpg" alt="">
-                                <span class="entry-category">Beauty</span>
+                                <p class="imgWrap">
+                                    <img id="img5"  alt="">
+                                </p>
+                                <span id="tag5" class="entry-category">Lifestyle</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 class="entry-title uppercase"><a href="blog-single.html">Elegant &amp; Neutral</a></h4>
-                                <span class="entry-date">Jul 14, 2016</span>
+                                <h4 id="content5" class="entry-title uppercase"><a href="blog-single.html">Must Haves</a></h4>
+                                <span id="time5" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
                     </div>
-
                     <div class="gallery-cell">
                         <article>
                             <a href="blog-single.html" class="entry-img">
-                                <img src="img/main_slide_5.jpg" alt="">
-                                <span class="entry-category">Lifestyle</span>
+                                <p class="imgWrap">
+                                    <img id="img6"  alt="">
+                                </p>
+                                <span id="tag6" class="entry-category">Lifestyle</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 class="entry-title uppercase"><a href="blog-single.html">Must Haves</a></h4>
-                                <span class="entry-date">Jul 14, 2016</span>
+                                <h4 id="content6" class="entry-title uppercase"><a href="blog-single.html">Must Haves</a></h4>
+                                <span id="time6" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
                     </div>
-
-                    <div class="gallery-cell">
-                        <article>
-                            <a href="blog-single.html" class="entry-img">
-                                <img src="img/main_slide_6.jpg" alt="">
-                                <span class="entry-category">Travel</span>
-                            </a>
-                            <div class="entry text-center">
-                                <h4 class="entry-title uppercase"><a href="blog-single.html">Paris fashion</a></h4>
-                                <span class="entry-date">Jul 14, 2016</span>
-                            </div>
-                        </article>
-                    </div>
-
                 </div>
             </div>
         </section> <!-- end latest stories -->
@@ -246,7 +303,12 @@
 
                         <!-- large post -->
                         <article class="entry-item large-post">
-
+                            <div class="entry-header">
+                                <a  class="entry-category">Lifestyle</a>
+                                <h2 class="entry-title">
+                                    <a >Enjoy your PiCUBE from here!</a>
+                                </h2>
+                            </div>
                             <div id="uploader">
                                 <div class="queueList">
                                     <div id="dndArea" class="placeholder">
@@ -260,10 +322,17 @@
                                         <span class="percentage"></span>
                                     </div><div class="info"></div>
                                     <div class="btns">
+                                        <!--<input type="button" id="btn" value="开始上传">-->
                                         <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
                                     </div>
                                 </div>
+                                <form  class="form" style="    margin: 20px;" action="/upload/commit" method="get">
+                                    <input type="text" placeholder="请输入图片描述" name="description">
+                                    <input type="text" placeholder="请输入标签（以分号隔开）" name="tag">
+                                    <button class="commitBtn" style="float:right;" >提交记录</button>
+                                </form>
                             </div>
+
                             <div class="entry-img">
                                 <a href="blog-single.html">
                                     <img src="img/featured_post.jpg" alt="">
@@ -273,13 +342,13 @@
                             <div class="entry-wrap">
                                 <div class="entry">
 
-                                    <div class="entry-content">
-                                        <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quisma bibendum auctor, nisi elit consequat ipsum, necsagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris. Morbi acumsan ipsum velit. Nam nec tellusb a odio tincidunt auctor a ornare odio. Sed non  mauris vitae erat consequat auctor eu in elit. Class aptent tacitioci Nullam ac urnaeu felis dapibus condi  entum sit amet a augue osqu ad litora torquent per conubia nostra, perada inceptos...
-                                        </p>
-                                        <div class="text-center">
-                                            <a href="blog-single.html" class="read-more underline-link">Read More</a>
-                                        </div>
-                                    </div>
+                                    <!--<div class="entry-content">-->
+                                        <!--<p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quisma bibendum auctor, nisi elit consequat ipsum, necsagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris. Morbi acumsan ipsum velit. Nam nec tellusb a odio tincidunt auctor a ornare odio. Sed non  mauris vitae erat consequat auctor eu in elit. Class aptent tacitioci Nullam ac urnaeu felis dapibus condi  entum sit amet a augue osqu ad litora torquent per conubia nostra, perada inceptos...-->
+                                        <!--</p>-->
+                                        <!--<div class="text-center">-->
+                                            <!--<a href="blog-single.html" class="read-more underline-link">Read More</a>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
 
                                     <div class="entry-meta-wrap clearfix">
                                         <ul class="entry-meta">
@@ -796,7 +865,9 @@
 </div> <!-- end main wrapper -->
 
 <!-- jQuery Scripts -->
+<script type="text/javascript" src="/javascripts/jquery.js"></script>
 <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+
 <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
 <script type="text/javascript" src="/javascripts/plugins.js"></script>
 <!--<script type="text/javascript" src="/javascripts/twitterFetcher_min.js"></script>-->

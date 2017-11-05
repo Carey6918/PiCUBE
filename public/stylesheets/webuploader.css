@@ -391,11 +391,20 @@ table {
 	display: inline-block;
 	float: left;
 }
+#uploader .form .commitBtn{
+	/*position: absolute;*/
+	top: 10px;
+	right: 20px;
+	line-height: 40px;
 
+}
 #uploader .statusBar .btns .webuploader-pick,
 #uploader .statusBar .btns .uploadBtn,
 #uploader .statusBar .btns .uploadBtn.state-uploading,
-#uploader .statusBar .btns .uploadBtn.state-paused {
+#uploader .statusBar .btns .uploadBtn.state-paused,
+#uploader .form .commitBtn,
+#uploader .form .commitBtn.state-uploading,
+#uploader .form .commitBtn.state-paused{
 	background: #ffffff;
 	border: 1px solid #cfcfcf;
 	color: #565656;
@@ -410,16 +419,22 @@ table {
 #uploader .statusBar .btns .webuploader-pick-hover,
 #uploader .statusBar .btns .uploadBtn:hover,
 #uploader .statusBar .btns .uploadBtn.state-uploading:hover,
-#uploader .statusBar .btns .uploadBtn.state-paused:hover {
+#uploader .statusBar .btns .uploadBtn.state-paused:hover,
+#uploader .form .commitBtn:hover,
+#uploader .form .commitBtn.state-uploading:hover,
+#uploader .form .commitBtn.state-paused:hover
+{
 	background: #f0f0f0;
 }
 
-#uploader .statusBar .btns .uploadBtn {
+#uploader .statusBar .btns .uploadBtn,
+#uploader .form .commitBtn{
 	background: #c0945c;
 	color: #fff;
 	border-color: transparent;
 }
-#uploader .statusBar .btns .uploadBtn:hover {
+#uploader .statusBar .btns .uploadBtn:hover,
+#uploader .form .commitBtn:hover{
 	background: black;
 }
 

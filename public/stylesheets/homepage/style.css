@@ -4516,6 +4516,9 @@ input[type="email"].newsletter-input:focus {
   color:#c0945c;
   cursor:pointer;
 }
+.sidebar .widget .col-md-12 a:hover{
+  color:white;
+}
 .imgWrap{
   position: relative;
   /* z-index: 1; */

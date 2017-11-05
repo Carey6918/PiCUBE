@@ -30,6 +30,77 @@
         }
         window.onload=function(){
             //要初始化的东西
+            getRecentRecords();
+            getFriendRecords();
+        }
+        function getFriendRecords(){
+            $.ajax({
+                url: 'getRecords',
+                type: 'post',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                success: function (data) {
+                    var $content = $('#content');
+                    //console.log(data);
+                    var picArr = new Array();
+                    for(var i = 0 ; i < data.length;i++){
+                    var $article = $( '<article class="entry-item large-post">'+
+                        '<div class="entry-header">'+
+//                        '<a href="#" class="entry-category">'+tag+'</a>'+
+                        '<h2 class="entry-title">'+
+                        '<a href="">'+data[i].content+'</a>'+
+                        '</h2>'+
+                        '</div>'+
+                        '<a href="" class="entry-slider">'+
+                        '<div class="flexslider" id="flexslider">'+
+                        '<ul id="imgul'+i.toString()+'" class="slides clearfix">'+
+                        '</ul>'+
+                        '</div>'+
+                        '</a>'+
+                        '<div class="entry-wrap">'+
+                        '<div class="entry">'+
+                        '<div class="entry-meta-wrap clearfix">'+
+                        '<ul class="entry-meta">'+
+                        '<li class="entry-date">'+
+                        '<a >'+data[i].createTime+'</a>'+
+                    '</li>'+
+                        '<li class="entry-comments">'+
+                        '<a >Author: '+data[i].createrid+'</a>'+
+                        '</li>'+
+                    '<li class="entry-comments">'+
+                        '<a href="">'+data[i].relayNums+ ' Relays</a>'+
+                    '</li>'+
+                    '<li class="entry-comments">'+
+                        '<a href="">'+data[i].commentNums+ ' Comments</a>'+
+                    '</li>'+
+                    '<li>'+
+                    '<a href="#">'+data[i].likeNums+' <i class="fa fa-heart"></i>'+
+                        '</a>'+
+                        '</li>'+
+                        '</ul>'+
+                        '</div>'+
+                        '</div>'+
+                        '</article>').appendTo($content);
+
+                    getPics(data[i].recordid,picArr);
+                    console.log(picArr);
+                    var $ul = $('#imgul'+i.toString());
+
+                    for(var j = 0 ;j < picArr.length;j++){
+                        var $img = ('<li>'+
+                        '<img src="'+picArr[j].path+'" alt="">'+
+                            '</li>').appendTo($ul)
+                    }
+                    }
+                },
+                error: function (){
+                    console.log("x");
+//                    alert("初始化最近的消息失败！");
+                }
+            });
+        }
+        function getRecentRecords(){
             $.ajax({
                 url: 'upload/headline',
                 type: 'post',
@@ -42,8 +113,8 @@
                     for(var i = 0; i < data.record.length;i++){
                         document.getElementById("content"+(i+1).toString()).innerHTML = data.record[i].content;
                         document.getElementById("time"+(i+1).toString()).innerHTML = data.record[i].createTime;
-                        getPics(data.record[i].recordid,pic,i);
-                        console.log(pic);
+                        getFirstPics(data.record[i].recordid,pic,i);
+                        //console.log(pic);
                         document.getElementById("img"+(i+1).toString()).src = pic[i].path;
                         document.getElementById("tag"+(i+1).toString()).innerHTML = pic[i].tag;
                     }
@@ -54,8 +125,9 @@
 //                    alert("初始化最近的消息失败！");
                 }
             });
+
         }
-        function getPics(val,res,i){
+        function getFirstPics(val,res,i){
             $.ajax({
                 url: 'upload/headlinepic',
                 type: 'get',
@@ -72,7 +144,25 @@
                 }
             });
         }
+        function getPics(val,res){
+            $.ajax({
+                url: 'getRecords/getPics',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data:{recordid: val},
+                success: function (data) {
 
+                    res = data;
+                    console.log(res);
+//                    console.log(data.pic);
+                },
+                error: function(){
+                    console.log("ree");
+                }
+            });
+        }
 
 
     </script>
@@ -333,319 +423,12 @@
                                 </form>
                             </div>
 
-                            <div class="entry-img">
-                                <a href="blog-single.html">
-                                    <img src="img/featured_post.jpg" alt="">
-                                </a>
-                            </div>
-
-                            <div class="entry-wrap">
-                                <div class="entry">
-
-                                    <!--<div class="entry-content">-->
-                                        <!--<p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quisma bibendum auctor, nisi elit consequat ipsum, necsagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris. Morbi acumsan ipsum velit. Nam nec tellusb a odio tincidunt auctor a ornare odio. Sed non  mauris vitae erat consequat auctor eu in elit. Class aptent tacitioci Nullam ac urnaeu felis dapibus condi  entum sit amet a augue osqu ad litora torquent per conubia nostra, perada inceptos...-->
-                                        <!--</p>-->
-                                        <!--<div class="text-center">-->
-                                            <!--<a href="blog-single.html" class="read-more underline-link">Read More</a>-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-
-                                    <div class="entry-meta-wrap clearfix">
-                                        <ul class="entry-meta">
-                                            <li class="entry-date">
-                                                <a href="#">August 30, 2016</a>
-                                            </li>
-                                            <li class="entry-comments">
-                                                <a href="blog-single.html">2 Comments</a>
-                                            </li>
-                                        </ul>
-
-                                    </div>
-
-                                </div>
-                            </div>
                         </article> <!-- end large post -->
 
-                        <!-- grid posts -->
-                        <div class="row items-grid">
-                            <div class="col-sm-6">
-                                <article class="entry-item">
-                                    <div class="entry-img">
-                                        <a href="blog-single.html">
-                                            <img src="img/post_1.jpg" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="entry-header">
-                                        <a href="#" class="entry-category">Lifestyle</a>
-                                        <h2 class="entry-title">
-                                            <a href="blog-single.html">missing the Bahamas</a>
-                                        </h2>
-                                    </div>
-                                    <div class="entry-wrap">
-                                        <div class="entry">
-                                            <div class="entry-content">
-                                                <p>Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulput ate cursus a sit amet mauris. Morbi accumsan ipsum velit. Namec elit tellus a odio tincidunt auctor a ornare odio. Sed non  mauris vitae...
-                                                </p>
-                                            </div>
-                                            <div class="entry-meta-wrap clearfix">
-                                                <ul class="entry-meta">
-                                                    <li class="entry-date">
-                                                        <a href="#">August 30, 2016</a>
-                                                    </li>
-                                                    <li class="entry-comments">
-                                                        <a href="blog-single.html">2 Comments</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
 
-                            <div class="col-sm-6">
-                                <article class="entry-item">
-                                    <div class="entry-img">
-                                        <a href="blog-single.html">
-                                            <img src="img/post_2.jpg" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="entry-header">
-                                        <a href="#" class="entry-category">Travel</a>
-                                        <h2 class="entry-title">
-                                            <a href="blog-single.html">revolve in mexico</a>
-                                        </h2>
-                                    </div>
-                                    <div class="entry-wrap">
-                                        <div class="entry">
-                                            <div class="entry-content">
-                                                <p>Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulput ate cursus a sit amet mauris. Morbi accumsan ipsum velit. Namec elit tellus a odio tincidunt auctor a ornare odio. Sed non  mauris vitae...
-                                                </p>
-                                            </div>
-                                            <div class="entry-meta-wrap clearfix">
-                                                <ul class="entry-meta">
-                                                    <li class="entry-date">
-                                                        <a href="#">August 30, 2016</a>
-                                                    </li>
-                                                    <li class="entry-comments">
-                                                        <a href="blog-single.html">2 Comments</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
+                        <div id="content">
 
-                            <div class="col-sm-6">
-                                <article class="entry-item">
-                                    <div class="entry-img">
-                                        <a href="blog-single.html">
-                                            <img src="img/post_3.jpg" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="entry-header">
-                                        <a href="#" class="entry-category">Travel</a>
-                                        <h2 class="entry-title">
-                                            <a href="blog-single.html">exploring Redwood</a>
-                                        </h2>
-                                    </div>
-                                    <div class="entry-wrap">
-                                        <div class="entry">
-                                            <div class="entry-content">
-                                                <p>Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulput ate cursus a sit amet mauris. Morbi accumsan ipsum velit. Namec elit tellus a odio tincidunt auctor a ornare odio. Sed non  mauris vitae...
-                                                </p>
-                                            </div>
-                                            <div class="entry-meta-wrap clearfix">
-                                                <ul class="entry-meta">
-                                                    <li class="entry-date">
-                                                        <a href="#">August 30, 2016</a>
-                                                    </li>
-                                                    <li class="entry-comments">
-                                                        <a href="blog-single.html">2 Comments</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <article class="entry-item">
-                                    <div class="entry-img">
-                                        <a href="blog-single.html">
-                                            <img src="img/post_4.jpg" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="entry-header">
-                                        <a href="#" class="entry-category">Lifestyle</a>
-                                        <h2 class="entry-title">
-                                            <a href="blog-single.html">Spring Inspiration</a>
-                                        </h2>
-                                    </div>
-                                    <div class="entry-wrap">
-                                        <div class="entry">
-                                            <div class="entry-content">
-                                                <p>Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulput ate cursus a sit amet mauris. Morbi accumsan ipsum velit. Namec elit tellus a odio tincidunt auctor a ornare odio. Sed non  mauris vitae...
-                                                </p>
-                                            </div>
-                                            <div class="entry-meta-wrap clearfix">
-                                                <ul class="entry-meta">
-                                                    <li class="entry-date">
-                                                        <a href="#">August 30, 2016</a>
-                                                    </li>
-                                                    <li class="entry-comments">
-                                                        <a href="blog-single.html">2 Comments</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-
-                        </div> <!-- end grid posts -->
-
-                        <!-- large post -->
-                        <article class="entry-item large-post">
-
-                            <div class="entry-header">
-                                <a href="#" class="entry-category">Lifestyle</a>
-                                <h2 class="entry-title">
-                                    <a href="blog-single.html">escape from reality</a>
-                                </h2>
-                            </div>
-
-                            <a href="blog-single.html" class="entry-slider">
-                                <div class="flexslider" id="flexslider">
-                                    <ul class="slides clearfix">
-                                        <li>
-                                            <img src="img/gallery_post_1.jpg" alt="">
-                                        </li>
-                                        <li>
-                                            <img src="img/gallery_post_2.jpg" alt="">
-                                        </li>
-                                        <li>
-                                            <img src="img/gallery_post_3.jpg" alt="">
-                                        </li>
-                                    </ul>
-                                </div>
-                            </a> <!-- end slider -->
-
-                            <div class="entry-wrap">
-                                <div class="entry">
-
-                                    <div class="entry-content">
-                                        <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quisma bibendum auctor, nisi elit consequat ipsum, necsagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris. Morbi acumsan ipsum velit. Nam nec tellusb a odio tincidunt auctor a ornare odio. Sed non  mauris vitae erat consequat auctor eu in elit. Class aptent tacitioci Nullam ac urnaeu felis dapibus condi  entum sit amet a augue osqu ad litora torquent per conubia nostra, perada inceptos...
-                                        </p>
-                                        <div class="text-center">
-                                            <a href="blog-single.html" class="read-more underline-link">Read More</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="entry-meta-wrap clearfix">
-                                        <ul class="entry-meta">
-                                            <li class="entry-date">
-                                                <a href="#">August 30, 2016</a>
-                                            </li>
-                                            <li class="entry-comments">
-                                                <a href="blog-single.html">2 Comments</a>
-                                            </li>
-                                        </ul>
-
-                                        <div class="social-icons right">
-                                            <a href="#">
-                                                <i class="fa fa-instagram"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa fa-facebook"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa fa-twitter"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa fa-pinterest-p"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa fa-heart"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </article> <!-- end large post -->
-
-                        <!-- grid posts -->
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <article class="entry-item">
-                                    <div class="entry-img">
-                                        <a href="blog-single.html">
-                                            <img src="img/post_6.jpg" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="entry-header">
-                                        <a href="#" class="entry-category">Travel</a>
-                                        <h2 class="entry-title">
-                                            <a href="blog-single.html">Trip in Brazil</a>
-                                        </h2>
-                                    </div>
-                                    <div class="entry-wrap">
-                                        <div class="entry">
-                                            <div class="entry-content">
-                                                <p>Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulput ate cursus a sit amet mauris. Morbi accumsan ipsum velit. Namec elit tellus a odio tincidunt auctor a ornare odio. Sed non  mauris vitae...
-                                                </p>
-                                            </div>
-                                            <div class="entry-meta-wrap clearfix">
-                                                <ul class="entry-meta">
-                                                    <li class="entry-date">
-                                                        <a href="#">August 30, 2016</a>
-                                                    </li>
-                                                    <li class="entry-comments">
-                                                        <a href="blog-single.html">2 Comments</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <article class="entry-item">
-                                    <div class="entry-img">
-                                        <a href="blog-single.html">
-                                            <img src="img/post_7.jpg" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="entry-header">
-                                        <a href="#" class="entry-category">Travel</a>
-                                        <h2 class="entry-title">
-                                            <a href="blog-single.html">Happy Lifetime</a>
-                                        </h2>
-                                    </div>
-                                    <div class="entry-wrap">
-                                        <div class="entry">
-                                            <div class="entry-content">
-                                                <p>Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulput ate cursus a sit amet mauris. Morbi accumsan ipsum velit. Namec elit tellus a odio tincidunt auctor a ornare odio. Sed non  mauris vitae...
-                                                </p>
-                                            </div>
-                                            <div class="entry-meta-wrap clearfix">
-                                                <ul class="entry-meta">
-                                                    <li class="entry-date">
-                                                        <a href="#">August 30, 2016</a>
-                                                    </li>
-                                                    <li class="entry-comments">
-                                                        <a href="blog-single.html">2 Comments</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-                        </div> <!-- end grid posts -->
+                        </div>
 
                         <div class="row mt-20">
                             <div class="col-md-12 text-center">
@@ -663,7 +446,7 @@
                             <div class="heading-lines">
                                 <h3 class="widget-title heading">About Me</h3>
                             </div>
-                            <img src="/images/icon/1.png" alt="">
+                            <img src="/images/icon/1.png" style="width:110px;"  alt="">
                             <p class="mb-20 mt-20">
                                 <a style="    font-family: 'Raleway', sans-serif;font-size: 20px;cursor:hand"><%- user %></a></p>
                             <ul class="user_atten clearfix ">

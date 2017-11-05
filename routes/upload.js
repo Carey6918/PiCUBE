@@ -67,6 +67,7 @@ router.get('/commit', function(req, res,next) {
                 }
             }
             );
+        db.run("update User set recordNums = recordNums+1 where userid='"+userid+"';");
 
     }
     // console.log(recordPic);
@@ -88,10 +89,4 @@ router.get('/headlinepic', function(req, res, next) {
     });
 });
 
-function getPicture(val) {
-    db.all("SELECT * FROM picture where recordid = '"+val+"';",function (err,rows) {
-        // console.log(rows[0]);
-        callback(rows[0]);
-    });
-}
 module.exports = router;

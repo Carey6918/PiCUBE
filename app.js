@@ -14,6 +14,8 @@ var user = require('./routes/user');
 var homepage = require('./routes/homepage');
 var upload = require('./routes/upload');
 var userInfo = require('./routes/userInfo');
+var getRecords = require('./routes/getRecords');
+
 var app = express();
 app.use(session({
     secret: "secret",
@@ -49,7 +51,7 @@ app.use('/user', user);
 app.use('/homepage', homepage);
 app.use('/upload',upload);
 app.use('/userInfo',userInfo);
-
+app.use('/getRecords',getRecords);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');

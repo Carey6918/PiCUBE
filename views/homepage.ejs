@@ -13,16 +13,6 @@
     <!-- Google Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Raleway:300,400%7COpen+Sans:400,400i,700%7CLibre+Baskerville:400i' rel='stylesheet'>
 
-    <!-- Css -->
-    <link rel="stylesheet" href="/stylesheets/homepage/bootstrap.min.css" />
-    <link rel="stylesheet" href="/stylesheets/homepage/font-icons.css" />
-    <link rel="stylesheet" href="/stylesheets/homepage/sliders.css" />
-    <link rel="stylesheet" href="/stylesheets/homepage/style.css" />
-    <link rel="stylesheet" href="/stylesheets/homepage/responsive.css" />
-    <link rel="stylesheet" href="/stylesheets/homepage/spacings.css" />
-    <link rel="stylesheet" href="/stylesheets/homepage/animate.min.css" />
-    <link rel="stylesheet" href="/stylesheets/webuploader.css" />
-    <link rel="stylesheet" type="text/css" href="/stylesheets/webuploader_main.css" />
 
     <script>
         function Handle(){
@@ -54,8 +44,13 @@
                         '</div>'+
                         '<a href="" class="entry-slider">'+
                         '<div class="flexslider" id="flexslider">'+
-                        '<ul id="imgul'+i.toString()+'" class="slides clearfix">'+
-                        '</ul>'+
+                        '<div id="imgdiv'+i.toString()+'" style="height:500px">'+
+                        '</div>'+
+                        '<ul class="flex-direction-nav">'+
+                        '<li class="flex-nav-prev"><a class="flex-prev" id="prev'+i.toString()+'"><i class="fa fa-angle-left">'+
+                        '</i></a></li>'+
+                        '<li class="flex-nav-next"><a class="flex-next" id="next'+i.toString()+'"><i class="fa fa-angle-right">'+
+                        '</i></a></li></ul>'+
                         '</div>'+
                         '</a>'+
                         '<div class="entry-wrap">'+
@@ -83,15 +78,40 @@
                         '</div>'+
                         '</article>').appendTo($content);
 
-                    getPics(data[i].recordid,picArr);
-                    console.log(picArr);
-                    var $ul = $('#imgul'+i.toString());
+                    getPics(data[i].recordid,picArr,i);
 
-                    for(var j = 0 ;j < picArr.length;j++){
-                        var $img = ('<li>'+
-                        '<img src="'+picArr[j].path+'" alt="">'+
-                            '</li>').appendTo($ul)
-                    }
+                    var $imgdiv = $('#imgdiv'+i.toString());
+                    var def = picArr[i][0].path;
+                    $imgdiv.css("background-image","url("+def+")");
+                    $imgdiv.css("background-position","center");
+                    $imgdiv.css("background-size", "cover");
+                    var nowNum = 0;
+                    //console.log(picArr[i]);
+                    $('#prev'+i.toString()).click(function () {
+
+                        var thisid=$(this).attr("id");
+                        thisid= thisid.replace("prev","");
+                        var $thisimg = $('#imgdiv'+thisid);
+                        thisid = thisid -0;
+                        if(nowNum==0){
+                            nowNum=picArr[thisid].length-1;
+                        }else nowNum-=1;
+                        console.log(picArr[thisid]);
+                        var bc = picArr[thisid][nowNum].path;
+                        $thisimg.css("background-image","url("+bc+")");
+                    });
+                        $('#next'+i.toString()).click(function () {
+                            var thisid=$(this).attr("id");
+                            thisid= thisid.replace("next","");
+                            var $thisimg = $('#imgdiv'+thisid);
+                            thisid = thisid -0;
+                            if(nowNum==(picArr[thisid].length-1)){
+                                nowNum=0;
+                            }else nowNum+=1;
+                            //console.log(picArr[thisid]);
+                            var bc = picArr[thisid][nowNum].path;
+                            $thisimg.css("background-image","url("+bc+")");
+                        });
                     }
                 },
                 error: function (){
@@ -144,7 +164,7 @@
                 }
             });
         }
-        function getPics(val,res){
+        function getPics(val,res,i){
             $.ajax({
                 url: 'getRecords/getPics',
                 type: 'get',
@@ -154,8 +174,8 @@
                 data:{recordid: val},
                 success: function (data) {
 
-                    res = data;
-                    console.log(res);
+                    res[i] = data;
+                    //console.log(res);
 //                    console.log(data.pic);
                 },
                 error: function(){
@@ -166,6 +186,17 @@
 
 
     </script>
+    <!-- Css -->
+    <link rel="stylesheet" href="/stylesheets/homepage/bootstrap.min.css" />
+    <link rel="stylesheet" href="/stylesheets/homepage/font-icons.css" />
+    <link rel="stylesheet" href="/stylesheets/homepage/sliders.css" />
+    <link rel="stylesheet" href="/stylesheets/homepage/style.css" />
+    <link rel="stylesheet" href="/stylesheets/homepage/responsive.css" />
+    <link rel="stylesheet" href="/stylesheets/homepage/spacings.css" />
+    <link rel="stylesheet" href="/stylesheets/homepage/animate.min.css" />
+    <link rel="stylesheet" href="/stylesheets/webuploader.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/webuploader_main.css" />
+
 </head>
 
 <body class="relative">
@@ -426,10 +457,9 @@
                         </article> <!-- end large post -->
 
 
-                        <div id="content">
+            <div id="content">
 
-                        </div>
-
+            </div>
                         <div class="row mt-20">
                             <div class="col-md-12 text-center">
                                 <a href="#" class="btn btn-md btn-stroke" id="load-more">Load More</a>

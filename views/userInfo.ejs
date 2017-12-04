@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Home</title>
+    <title>User Info</title>
 
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
@@ -14,6 +14,7 @@
     <link href='http://fonts.googleapis.com/css?family=Raleway:300,400%7COpen+Sans:400,400i,700%7CLibre+Baskerville:400i' rel='stylesheet'>
 
     <!-- Css -->
+
     <link rel="stylesheet" href="/stylesheets/homepage/bootstrap.min.css" />
     <link rel="stylesheet" href="/stylesheets/homepage/font-icons.css" />
     <link rel="stylesheet" href="/stylesheets/homepage/sliders.css" />
@@ -23,14 +24,253 @@
     <link rel="stylesheet" href="/stylesheets/homepage/animate.min.css" />
     <link rel="stylesheet" href="/stylesheets/webuploader.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/webuploader_main.css" />
-
+    <link rel="stylesheet" href="/stylesheets/friendCategory.css" />
     <script>
         function Handle(){
 
         }
         window.onload=function(){
             //要初始化的东西
+            getThisRecords();
+            checkFollow();
+            friendCate();
 
+        }
+        function getThisRecords(){
+            $.ajax({
+                url: '/userInfo/getRec',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data:{user: "<%- username %>"},
+                success: function (data) {
+                    var $content = $('#content');
+                    //console.log(data);
+                    var picArr = new Array();
+                    for(var i = 0 ; i < data.length;i++){
+                        var $article = $( '<article class="entry-item large-post">'+
+                            '<div class="entry-header">'+
+//                        '<a href="#" class="entry-category">'+tag+'</a>'+
+                            '<h2 class="entry-title">'+
+                            '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].content+'</a>'+
+                            '</h2>'+
+                            '</div>'+
+                            '<a href="/detailInfo?recordid='+data[i].recordid+'" class="entry-slider">'+
+                            '<div class="flexslider" id="flexslider">'+
+                            '<div id="imgdiv'+i.toString()+'" style="height:600px">'+
+                            '</div>'+
+                            '<ul style="height: 0px;" class="flex-direction-nav">'+
+                            '<li class="flex-nav-prev"><a class="flex-prev" id="prev'+i.toString()+'"><i class="fa fa-angle-left">'+
+                            '</i></a></li>'+
+                            '<li class="flex-nav-next"><a class="flex-next" id="next'+i.toString()+'"><i class="fa fa-angle-right">'+
+                            '</i></a></li></ul>'+
+                            '</div>'+
+                            '</a>'+
+                            '<div class="entry-wrap">'+
+                            '<div class="entry">'+
+                            '<div class="entry-meta-wrap clearfix">'+
+                            '<ul class="entry-meta">'+
+                            '<li class="entry-date">'+
+                            '<a >'+data[i].createTime+'</a>'+
+                            '</li>'+
+                            '<li class="entry-comments">'+
+                            '<a href="/userInfo?username='+data[i].createrid+'">Author: '+data[i].createrid+'</a>'+
+                            '</li>'+
+                            '<li class="entry-comments">'+
+                            '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].relayNums+ ' Relays</a>'+
+                            '</li>'+
+                            '<li class="entry-comments">'+
+                            '<a hhref="/detailInfo?recordid='+data[i].recordid+'">'+data[i].commentNums+ ' Comments</a>'+
+                            '</li>'+
+                            '<li>'+
+                            '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].likeNums+' <i class="fa fa-heart"></i>'+
+                            '</a>'+
+                            '</li>'+
+                            '</ul>'+
+                            '</div>'+
+                            '</div>'+
+                            '</article>').appendTo($content);
+
+                        getPics(data[i].recordid,picArr,i);
+
+                        var $imgdiv = $('#imgdiv'+i.toString());
+                        var def = picArr[i][0].path;
+                        $imgdiv.css("background-image","url("+def+")");
+                        $imgdiv.attr("href",def);
+                        $imgdiv.css("background-position","center");
+                        $imgdiv.css("background-size", "cover");
+
+                        var nowNum = 0;
+                        //console.log(picArr[i]);
+                        $('#prev'+i.toString()).click(function () {
+
+                            var thisid=$(this).attr("id");
+                            thisid= thisid.replace("prev","");
+                            var $thisimg = $('#imgdiv'+thisid);
+                            thisid = thisid -0;
+                            if(nowNum==0){
+                                nowNum=picArr[thisid].length-1;
+                            }else nowNum-=1;
+                            console.log(picArr[thisid]);
+                            var bc = picArr[thisid][nowNum].path;
+                            $thisimg.css("background-image","url("+bc+")");
+                            $thisimg.attr("href",bc);
+                        });
+                        $('#next'+i.toString()).click(function () {
+                            var thisid=$(this).attr("id");
+                            thisid= thisid.replace("next","");
+                            var $thisimg = $('#imgdiv'+thisid);
+                            thisid = thisid -0;
+                            if(nowNum==(picArr[thisid].length-1)){
+                                nowNum=0;
+                            }else nowNum+=1;
+                            //console.log(picArr[thisid]);
+                            var bc = picArr[thisid][nowNum].path;
+                            $thisimg.css("background-image","url("+bc+")");
+                            $thisimg.attr("href",bc);
+                        });
+                    }
+                },
+                error: function (){
+                    console.log("x");
+//                    alert("初始化最近的消息失败！");
+                }
+            });
+        }
+        function getPics(val,res,i){
+            $.ajax({
+                url: 'getRecords/getPics',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data:{recordid: val},
+                success: function (data) {
+                    res[i] = data;
+                },
+                error: function(){
+                    console.log("ree");
+                }
+            });
+        }
+        function checkFollow(){
+            $.ajax({
+                url: 'userInfo/checkFollow',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data:{user: '<%- username %>'},
+                success: function (data) {
+                    if(data){
+                        var $followBtn = $('#followBtn');
+                        $followBtn.attr("onclick","noFollow()");
+                        $followBtn.html("取消关注");
+                        $followBtn.attr("style","  background-color: #c0945c;color: #fff;");
+                    }else{
+                        var $followBtn = $('#followBtn');
+                        $followBtn.attr("class","bounceInDown btn btn-md btn-stroke");
+                        $('#followBtn').click(function(){
+                            className = $(this).attr('class');
+                            $('#dialogBg').fadeIn(300);
+                            $('#dialog').removeAttr('class').addClass('animated '+className+'').fadeIn();
+                        });
+                    }
+                },
+                error: function(){
+                    console.log("ree");
+                }
+            });
+        }
+        function setFollow(){
+            var cates = document.getElementsByName("cate");
+            var chooseCate;
+            if(cates!=null) {
+                for (var i = 0; i < cates.length; i++) {
+                    if (cates[i].checked) {
+                        chooseCate = cates[i].value;
+                    }
+                }
+            }
+            if(chooseCate==null){
+                cates = document.getElementsByName("inputCate");
+                chooseCate = cates[0].value;
+            }
+            $.ajax({
+                url: 'userInfo/setFollow',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data:{user: '<%- username %>',category:chooseCate},
+                success: function (data) {
+                    location.reload();
+                },
+                error: function(){
+                    console.log("关注失败");
+                }
+            });
+        }
+        function noFollow(){
+            $.ajax({
+                url: 'userInfo/noFollow',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data:{user: '<%- username %>'},
+                success: function (data) {
+                    location.reload();
+                },
+                error: function(){
+                    console.log("取关失败");
+                }
+            });
+        }
+        var w,h,className;
+        function getSrceenWH(){
+            w = $(window).width();
+            h = $(window).height();
+            $('#dialogBg').width(w).height(h);
+        }
+
+//        window.onresize = function(){
+//            getSrceenWH();
+//        }
+//        $(window).resize();
+        function friendCate(){
+            getSrceenWH();
+            $.ajax({
+                url: 'userInfo/getCategories',
+                type: 'post',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                success: function (data) {
+                    //console.log(data.category);
+                    var $cate = $('#categories');
+                    for(var i = 0; i< data.category.length;i++){
+                        var category = data.category[i].category
+                        if(category!="全部"){
+                        var $cateRadio =$('<input id="'+category+'" name="cate" type="radio" value="'+category+'"><label style="margin-right: 10px;" for="'+category+'">'+category+'</label>');
+                        $cateRadio.appendTo($('#cateLine'+(i/3).toString()));
+                        }
+                    }
+                },
+                error: function(){
+                    console.log("加载失败！");
+                }
+            });
+            //显示弹框
+
+
+            //关闭弹窗
+            $('.claseDialogBtn').click(function(){
+                $('#dialogBg').fadeOut(300,function(){
+                    $('#dialog').addClass('bounceOutUp').fadeOut();
+                });
+            });
         }
 
     </script>
@@ -100,7 +340,7 @@
 
                                 <ul class="nav navbar-nav">
 
-                                    <li><a href="/">首页</a></li>
+                                    <li><a href="/homepage">首页</a></li>
                                     <li><a href="">图片</a></li>
                                     <li><a href="">视频</a></li>
                                     <li><a href="">其他</a></li>
@@ -122,7 +362,7 @@
                         <div class="side-menu right mobile-left-align">
                             <div class="nav-inner menu-socials social-icons">
                                 <div class="right">
-                                    <a href="#">username</a>
+                                    <a href="#"><%- user%></a>
                                     <a href="/user/logout">注销</a>
                                 </div>
                             </div>
@@ -142,64 +382,11 @@
 
                     <!-- post content -->
                     <div class="col-md-9 post-content mb-50">
+                        <div id="content">
 
+                        </div>
                         <!-- large post -->
-                        <article class="entry-item large-post">
 
-                            <div class="entry-header">
-                                <a href="#" class="entry-category">Lifestyle</a>
-                                <h2 class="entry-title">
-                                    <a href="blog-single.html">escape from reality</a>
-                                </h2>
-                            </div>
-
-                            <a href="blog-single.html" class="entry-slider">
-                                <div class="flexslider" id="flexslider">
-                                    <ul class="slides clearfix" style="width: 250px;margin: 0 auto;">
-                                        <!--这里可切换图片-->
-                                        <li>
-                                            <img src="/images/database/20151127191832_R2t8E.jpeg" alt="">
-                                        </li>
-                                        <li>
-                                            <img src="/images/database/20151122075121_ijHE2.jpeg" alt="">
-                                        </li>
-                                        <li>
-                                            <img src="/images/database/20150218161712_GjNmz.jpeg" alt="">
-                                        </li>
-                                        <li>
-                                            <img src="/images/database/20150218161712_GjNmz.jpeg" alt="">
-                                        </li>
-                                    </ul>
-                                </div>
-                            </a> <!-- end slider -->
-
-                            <div class="entry-wrap">
-                                <div class="entry">
-
-                                    <div class="entry-content">
-                                        <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quisma bibendum auctor, nisi elit consequat ipsum, necsagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris. Morbi acumsan ipsum velit. Nam nec tellusb a odio tincidunt auctor a ornare odio. Sed non  mauris vitae erat consequat auctor eu in elit. Class aptent tacitioci Nullam ac urnaeu felis dapibus condi  entum sit amet a augue osqu ad litora torquent per conubia nostra, perada inceptos...
-                                        </p>
-                                        <div class="text-center">
-                                            <a href="blog-single.html" class="read-more underline-link">Read More</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="entry-meta-wrap clearfix">
-                                        <ul class="entry-meta">
-                                            <li class="entry-date">
-                                                <a href="#">August 30, 2016</a>
-                                            </li>
-                                            <li class="entry-comments">
-                                                <a href="blog-single.html">2 Comments</a>
-                                            </li>
-                                        </ul>
-
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </article> <!-- end large post -->
 
                         <div class="row mt-20">
                             <div class="col-md-12 text-center">
@@ -215,33 +402,33 @@
 
                         <div class="widget about-blog text-center">
                             <div class="heading-lines">
-                                <h3 class="widget-title heading">About Me</h3>
+                                <h3 class="widget-title heading">Others</h3>
                             </div>
-                            <img src="/images/icon/1.png" alt="">
+                            <img src="/images/icon/1.png" style="width:110px;" alt="">
                             <p class="mb-20 mt-20">
-                                <a style="    font-family: 'Raleway', sans-serif;font-size: 20px;cursor:hand">username</a></p>
+                                <a style="    font-family: 'Raleway', sans-serif;font-size: 20px;cursor:hand"><%- username %></a></p>
                             <ul class="user_atten clearfix ">
                                 <li class="S_line1">
                                     <a bpfilter="page_frame" href="" class="S_txt1">
-                                        <strong node-type="follow">0</strong><br>
+                                        <strong node-type="follow"><%- followNums %></strong><br>
                                         <span class="S_txt2">关注</span>
                                     </a>
                                 </li>
                                 <li class="S_line1">
                                     <a bpfilter="page_frame" href="" class="S_txt1">
-                                        <strong node-type="fans">0</strong><br>
+                                        <strong node-type="fans"><%- fansNums %></strong><br>
                                         <span class="S_txt2">粉丝</span>
                                     </a></li>
                                 <li class="S_line1">
                                     <a bpfilter="page_frame" href="/1987335911/profile?rightmod=1&amp;wvr=6&amp;mod=personnumber" class="S_txt1">
-                                        <strong node-type="weibo">0</strong><br>
+                                        <strong node-type="weibo"><%- recordNums %></strong><br>
                                         <span class="S_txt2">微博</span>
                                     </a>
                                 </li>
                             </ul>
                             <div class="row mt-20">
                                 <div class="col-md-12 text-center">
-                                    <a href="#" class="btn btn-md btn-stroke" >关注他</a>
+                                    <a id="followBtn" href="#" class="btn btn-md btn-stroke" >关注他</a>
                                 </div>
                             </div>
                         </div>
@@ -265,127 +452,127 @@
                         <!--<ul id="instafeed-grid"></ul>-->
                         <!--</div>-->
 
-                        <!-- Categories -->
-                        <div class="widget categories">
-                            <div class="heading-lines">
-                                <h3 class="widget-title heading">Categories</h3>
-                            </div>
-                            <ul class="list-dividers">
-                                <li>
-                                    <a href="#">Lifestyle</a><span>(8)</span>
-                                </li>
-                                <li>
-                                    <a href="#">Travel</a><span>(14)</span>
-                                </li>
-                                <li>
-                                    <a href="#">Beauty</a><span>(5)</span>
-                                </li>
-                                <li>
-                                    <a href="#">Music</a><span>(3)</span>
-                                </li>
-                                <li>
-                                    <a href="#">Food</a><span>(7)</span>
-                                </li>
-                            </ul>
-                        </div>
+                        <!--&lt;!&ndash; Categories &ndash;&gt;-->
+                        <!--<div class="widget categories">-->
+                            <!--<div class="heading-lines">-->
+                                <!--<h3 class="widget-title heading">Categories</h3>-->
+                            <!--</div>-->
+                            <!--<ul class="list-dividers">-->
+                                <!--<li>-->
+                                    <!--<a href="#">Lifestyle</a><span>(8)</span>-->
+                                <!--</li>-->
+                                <!--<li>-->
+                                    <!--<a href="#">Travel</a><span>(14)</span>-->
+                                <!--</li>-->
+                                <!--<li>-->
+                                    <!--<a href="#">Beauty</a><span>(5)</span>-->
+                                <!--</li>-->
+                                <!--<li>-->
+                                    <!--<a href="#">Music</a><span>(3)</span>-->
+                                <!--</li>-->
+                                <!--<li>-->
+                                    <!--<a href="#">Food</a><span>(7)</span>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
 
                         <!-- Ad banner -->
-                        <div class="widget custom-ad-banner">
-                            <a href="#">
-                                <img src="img/banner.jpg" alt="">
-                            </a>
-                        </div>
+                        <!--<div class="widget custom-ad-banner">-->
+                            <!--<a href="#">-->
+                                <!--<img src="img/banner.jpg" alt="">-->
+                            <!--</a>-->
+                        <!--</div>-->
 
                         <!-- Recent Posts -->
-                        <div class="widget recent-posts">
-                            <div class="heading-lines">
-                                <h3 class="widget-title heading">Recent Posts</h3>
-                            </div>
-                            <div class="entry-list w-thumbs">
-                                <ul class="posts-list list-dividers">
-                                    <li class="entry-li">
-                                        <article class="post-small clearfix">
-                                            <div class="entry-img">
-                                                <a href="blog-single.html">
-                                                    <img src="img/recent_1.jpg" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="entry">
-                                                <h3 class="entry-title"><a href="magazine-single-article.html">Best Beaches in Sydney</a></h3>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="entry-date">
-                                                        <a href="#">19 Mar, 2016</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </article>
-                                    </li>
-                                    <li class="entry-li">
-                                        <article class="post-small clearfix">
-                                            <div class="entry-img">
-                                                <a href="blog-single.html">
-                                                    <img src="img/recent_2.jpg" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="entry">
-                                                <h3 class="entry-title"><a href="magazine-single-article.html">First Summer Ice Cream</a></h3>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="entry-date">
-                                                        <a href="#">16 Mar, 2016</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </article>
-                                    </li>
-                                    <li class="entry-li">
-                                        <article class="post-small clearfix">
-                                            <div class="entry-img">
-                                                <a href="blog-single.html">
-                                                    <img src="img/recent_3.jpg" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="entry">
-                                                <h3 class="entry-title"><a href="magazine-single-article.html">Best Hat for Travel</a></h3>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="entry-date">
-                                                        <a href="#">16 Mar, 2016</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </article>
-                                    </li>
-                                    <li class="entry-li">
-                                        <article class="post-small clearfix">
-                                            <div class="entry-img">
-                                                <a href="blog-single.html">
-                                                    <img src="img/recent_4.jpg" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="entry">
-                                                <h3 class="entry-title"><a href="magazine-single-article.html">New Look is Arrived</a></h3>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="entry-date">
-                                                        <a href="#">16 Mar, 2016</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </article>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        <!--<div class="widget recent-posts">-->
+                            <!--<div class="heading-lines">-->
+                                <!--<h3 class="widget-title heading">Recent Posts</h3>-->
+                            <!--</div>-->
+                            <!--<div class="entry-list w-thumbs">-->
+                                <!--<ul class="posts-list list-dividers">-->
+                                    <!--<li class="entry-li">-->
+                                        <!--<article class="post-small clearfix">-->
+                                            <!--<div class="entry-img">-->
+                                                <!--<a href="blog-single.html">-->
+                                                    <!--<img src="img/recent_1.jpg" alt="">-->
+                                                <!--</a>-->
+                                            <!--</div>-->
+                                            <!--<div class="entry">-->
+                                                <!--<h3 class="entry-title"><a href="magazine-single-article.html">Best Beaches in Sydney</a></h3>-->
+                                                <!--<ul class="entry-meta list-inline">-->
+                                                    <!--<li class="entry-date">-->
+                                                        <!--<a href="#">19 Mar, 2016</a>-->
+                                                    <!--</li>-->
+                                                <!--</ul>-->
+                                            <!--</div>-->
+                                        <!--</article>-->
+                                    <!--</li>-->
+                                    <!--<li class="entry-li">-->
+                                        <!--<article class="post-small clearfix">-->
+                                            <!--<div class="entry-img">-->
+                                                <!--<a href="blog-single.html">-->
+                                                    <!--<img src="img/recent_2.jpg" alt="">-->
+                                                <!--</a>-->
+                                            <!--</div>-->
+                                            <!--<div class="entry">-->
+                                                <!--<h3 class="entry-title"><a href="magazine-single-article.html">First Summer Ice Cream</a></h3>-->
+                                                <!--<ul class="entry-meta list-inline">-->
+                                                    <!--<li class="entry-date">-->
+                                                        <!--<a href="#">16 Mar, 2016</a>-->
+                                                    <!--</li>-->
+                                                <!--</ul>-->
+                                            <!--</div>-->
+                                        <!--</article>-->
+                                    <!--</li>-->
+                                    <!--<li class="entry-li">-->
+                                        <!--<article class="post-small clearfix">-->
+                                            <!--<div class="entry-img">-->
+                                                <!--<a href="blog-single.html">-->
+                                                    <!--<img src="img/recent_3.jpg" alt="">-->
+                                                <!--</a>-->
+                                            <!--</div>-->
+                                            <!--<div class="entry">-->
+                                                <!--<h3 class="entry-title"><a href="magazine-single-article.html">Best Hat for Travel</a></h3>-->
+                                                <!--<ul class="entry-meta list-inline">-->
+                                                    <!--<li class="entry-date">-->
+                                                        <!--<a href="#">16 Mar, 2016</a>-->
+                                                    <!--</li>-->
+                                                <!--</ul>-->
+                                            <!--</div>-->
+                                        <!--</article>-->
+                                    <!--</li>-->
+                                    <!--<li class="entry-li">-->
+                                        <!--<article class="post-small clearfix">-->
+                                            <!--<div class="entry-img">-->
+                                                <!--<a href="blog-single.html">-->
+                                                    <!--<img src="img/recent_4.jpg" alt="">-->
+                                                <!--</a>-->
+                                            <!--</div>-->
+                                            <!--<div class="entry">-->
+                                                <!--<h3 class="entry-title"><a href="magazine-single-article.html">New Look is Arrived</a></h3>-->
+                                                <!--<ul class="entry-meta list-inline">-->
+                                                    <!--<li class="entry-date">-->
+                                                        <!--<a href="#">16 Mar, 2016</a>-->
+                                                    <!--</li>-->
+                                                <!--</ul>-->
+                                            <!--</div>-->
+                                        <!--</article>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-                        <!-- Latest Tweets -->
-                        <div class="widget categories">
-                            <div class="heading-lines">
-                                <h3 class="widget-title heading">Latest Tweets</h3>
-                            </div>
-                            <div class="twitter-slider text-center">
-                                <i class="fa fa-twitter twitter-icon"></i>
-                                <a href="#">@deothemes</a>
-                                <div id="tweets"></div>
-                            </div>
-                        </div>
+                        <!--&lt;!&ndash; Latest Tweets &ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="widget categories">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="heading-lines">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<h3 class="widget-title heading">Latest Tweets</h3>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="twitter-slider text-center">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<i class="fa fa-twitter twitter-icon"></i>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<a href="#">@deothemes</a>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<div id="tweets"></div>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
 
                     </aside> <!-- end sidebar -->
 
@@ -393,7 +580,25 @@
             </div> <!-- end container -->
         </section> <!-- end content -->
 
-
+        <div id="dialogBg"></div>
+        <div id="dialog" class="animated">
+            <img class="dialogIco" width="50" height="50" src="images/ico.png" alt="" />
+            <div class="dialogTop">
+                <a href="javascript:;" class="claseDialogBtn">关闭</a>
+            </div>
+            <form id="editForm">
+                <ul id="categories" class="editInfos">
+                    <li><label>分组：<input  name="inputCate" class="ipt" value="" /></label></li>
+                    <li id="cateLine0">
+                        <input id="全部" name="cate" type="radio" value="全部"><label style="margin-right: 10px;" for="全部">全部</label>
+                    </li>
+                    <li id="cateLine1"></li>
+                    <li id="cateLine2"></li>
+                    <li><input value="确认提交" class="submitBtn" onclick="setFollow()"/></li>
+                </ul>
+            </form>
+        </div>
+    </div>
 
 
 

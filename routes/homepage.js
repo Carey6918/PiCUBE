@@ -11,7 +11,7 @@ var db = new sqlite.Database(file);
 
 /* GET home page. 首页*/
 router.get('/', function(req, res, next) {
-    var fansNums = 123;
+
     db.all("SELECT * FROM User WHERE userid = ?",req.session.user, function(err, rows){
         {
             if(err){                                         //错误就返回给原post处（login.html) 状态码为500的错误
@@ -25,11 +25,11 @@ router.get('/', function(req, res, next) {
                 var fansNums = rows[0].fansNums;
                 var followNums = rows[0].followNums;
                 var recordNums = rows[0].recordNums;
-                res.render('homepage', { fansNums: fansNums ,followNums:followNums,recordNums:recordNums });
+                var userIcon = rows[0].icon;
+                res.render('homepage', { fansNums: fansNums ,followNums:followNums,recordNums:recordNums,userIcon:userIcon });
                 }
             }
     });
-
 
 });
 

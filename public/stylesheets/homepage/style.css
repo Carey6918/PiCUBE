@@ -1635,7 +1635,7 @@ header.transparent .navbar-toggle .icon-bar {
 /* Hero Image
 /*-------------------------------------------------------*/
 .hero-img {
-  background-image: url(../img/hero_img.jpg);
+  /*background-image: url(../img/hero_img.jpg);*/
   background-size: cover;
   background-position: center;
   padding: 0;
@@ -2228,6 +2228,7 @@ header.transparent .navbar-toggle .icon-bar {
   float: left;
   margin-right: 20px;
   margin-bottom: 0;
+  width: 100px;
 }
 
 .entry-list li .entry-meta {
@@ -2436,6 +2437,7 @@ header.transparent .navbar-toggle .icon-bar {
 
 .entry-comments .comment-content p {
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .comment-list > li:last-child .comment-body {
@@ -2454,6 +2456,7 @@ header.transparent .navbar-toggle .icon-bar {
 
 #comment {
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
 /*-------------------------------------------------------*/
@@ -4009,34 +4012,34 @@ header.transparent .navbar-toggle .icon-bar {
 /*-------------------------------------------------------*/
 /* Form Elements
 /*-------------------------------------------------------*/
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="tel"],
-input[type="number"],
-input[type="date"],
-input[type="search"],
-select,
-textarea {
-  height: 42px;
-  border: 1px solid #eaeaea;
-  width: 100%;
-  margin-bottom: 16px;
-  font-size: 13px;
-  padding: 0 16px;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  -ms-box-shadow: none;
-  box-shadow: none;
-  -webkit-border-radius: 0;
-  border-radius: 0;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out;
-  -ms-transition: all 0.3s ease-in-out;
-  -o-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
+/*input[type="text"],*/
+/*input[type="password"],*/
+/*input[type="email"],*/
+/*input[type="url"],*/
+/*input[type="tel"],*/
+/*input[type="number"],*/
+/*input[type="date"],*/
+/*input[type="search"],*/
+/*select,*/
+/*textarea {*/
+  /*height: 42px;*/
+  /*border: 1px solid #eaeaea;*/
+  /*width: 100%;*/
+  /*margin-bottom: 16px;*/
+  /*font-size: 13px;*/
+  /*padding: 0 16px;*/
+  /*-webkit-box-shadow: none;*/
+  /*-moz-box-shadow: none;*/
+  /*-ms-box-shadow: none;*/
+  /*box-shadow: none;*/
+  /*-webkit-border-radius: 0;*/
+  /*border-radius: 0;*/
+  /*-webkit-transition: all 0.3s ease-in-out;*/
+  /*-moz-transition: all 0.3s ease-in-out;*/
+  /*-ms-transition: all 0.3s ease-in-out;*/
+  /*-o-transition: all 0.3s ease-in-out;*/
+  /*transition: all 0.3s ease-in-out;*/
+/*}*/
 
 textarea {
   height: auto;

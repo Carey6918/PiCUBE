@@ -1,9 +1,9 @@
-<!--这是点了登录以后会跳转的首页-->
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Home</title>
+    <title>HomePage</title>
 
     <meta charset="utf-8">
     <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
@@ -18,12 +18,18 @@
         function Handle(){
 
         }
+
         window.onload=function(){
             //要初始化的东西
+
             getRecentRecords();
             getFriendRecords();
+            friendCate();
+//            setIcon();
         }
+
         function getFriendRecords(){
+
             $.ajax({
                 url: 'getRecords',
                 type: 'post',
@@ -32,6 +38,7 @@
                 async: false,
                 success: function (data) {
                     var $content = $('#content');
+                    $content.html("");
                     //console.log(data);
                     var picArr = new Array();
                     for(var i = 0 ; i < data.length;i++){
@@ -39,14 +46,14 @@
                         '<div class="entry-header">'+
 //                        '<a href="#" class="entry-category">'+tag+'</a>'+
                         '<h2 class="entry-title">'+
-                        '<a href="">'+data[i].content+'</a>'+
+                        '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].content+'</a>'+
                         '</h2>'+
                         '</div>'+
-                        '<a href="" class="entry-slider">'+
+                        '<a href="/detailInfo?recordid='+data[i].recordid+'" class="entry-slider">'+
                         '<div class="flexslider" id="flexslider">'+
-                        '<div id="imgdiv'+i.toString()+'" style="height:500px">'+
+                        '<div id="imgdiv'+i.toString()+'" style="height:600px">'+
                         '</div>'+
-                        '<ul class="flex-direction-nav">'+
+                        '<ul style="height:0px;" class="flex-direction-nav">'+
                         '<li class="flex-nav-prev"><a class="flex-prev" id="prev'+i.toString()+'"><i class="fa fa-angle-left">'+
                         '</i></a></li>'+
                         '<li class="flex-nav-next"><a class="flex-next" id="next'+i.toString()+'"><i class="fa fa-angle-right">'+
@@ -61,16 +68,16 @@
                         '<a >'+data[i].createTime+'</a>'+
                     '</li>'+
                         '<li class="entry-comments">'+
-                        '<a >Author: '+data[i].createrid+'</a>'+
+                        '<a href="/userInfo?username='+data[i].createrid+'">Author: '+data[i].createrid+'</a>'+
                         '</li>'+
                     '<li class="entry-comments">'+
-                        '<a href="">'+data[i].relayNums+ ' Relays</a>'+
+                        '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].relayNums+ ' Relays</a>'+
                     '</li>'+
                     '<li class="entry-comments">'+
-                        '<a href="">'+data[i].commentNums+ ' Comments</a>'+
+                        '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].commentNums+ ' Comments</a>'+
                     '</li>'+
                     '<li>'+
-                    '<a href="#">'+data[i].likeNums+' <i class="fa fa-heart"></i>'+
+                    '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].likeNums+' <i class="fa fa-heart"></i>'+
                         '</a>'+
                         '</li>'+
                         '</ul>'+
@@ -132,6 +139,7 @@
                     var pic = new Array();
                     for(var i = 0; i < data.record.length;i++){
                         document.getElementById("content"+(i+1).toString()).innerHTML = data.record[i].content;
+//                        document.getElementById("img"+(i+1).toString()).setAttribute("href","/detailInfo?recordid="+data.record[i].recordid);
                         document.getElementById("time"+(i+1).toString()).innerHTML = data.record[i].createTime;
                         getFirstPics(data.record[i].recordid,pic,i);
                         //console.log(pic);
@@ -184,7 +192,63 @@
             });
         }
 
+        function friendCate() {
+            $.ajax({
+                url: 'userInfo/getCategories',
+                type: 'post',
+                contentType: "application/json",
 
+                traditional: false,
+                async: false,
+                success: function (data) {
+                    //console.log(data.category);
+                    var $cate = $('#categories');
+                    for (var i = 0; i < data.category.length; i++) {
+                        var category = data.category[i].category
+                        if (category != "全部") {
+                            var $cateRadio = $('   <li> <a id="'+category+'" >'+category+'</a></li>');
+
+                            $cateRadio.appendTo($cate);
+                            $('#'+category).click(function () {
+                                var thisid = $(this).attr("id");
+                                $.ajax({
+                                    url: 'getRecords/setCategorySession',
+                                    type: 'get',
+                                    contentType: "application/json",
+                                    data:{cateSession:thisid},
+                                    traditional: false,
+                                    async: false,
+                                    success: function (data) {
+                                        location.reload();
+                                    },
+                                    error: function () {
+                                        console.log("加载失败！");
+                                    }
+                                });
+                            });
+                        }
+                    }
+                },
+                error: function () {
+                    console.log("加载失败！");
+                }
+            });
+        }
+        function setIcon(){
+            var $userIcon = $('#userIcon');
+            $userIcon.attr("class","bounceInDown");
+            $('#userIcon').click(function() {
+                className = $(this).attr('class');
+                $('#dialogBg').fadeIn(300);
+                $('#dialog').removeAttr('class').addClass('animated ' + className + '').fadeIn();
+            });
+            //关闭弹窗
+            $('.claseDialogBtn').click(function() {
+                $('#dialogBg').fadeOut(300, function () {
+                    $('#dialog').addClass('bounceOutUp').fadeOut();
+                });
+            });
+        }
     </script>
     <!-- Css -->
     <link rel="stylesheet" href="/stylesheets/homepage/bootstrap.min.css" />
@@ -196,7 +260,23 @@
     <link rel="stylesheet" href="/stylesheets/homepage/animate.min.css" />
     <link rel="stylesheet" href="/stylesheets/webuploader.css" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/webuploader_main.css" />
-
+    <link rel="stylesheet" href="/stylesheets/friendCategory.css" />
+    <link rel="stylesheet" href="/stylesheets/cropbox.css" />
+    <style>
+        .center {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            background-color: #000;
+            width:50%;
+            height: 50%;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -ms-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+        }
+    </style>
 </head>
 
 <body class="relative">
@@ -263,7 +343,7 @@
 
                                 <ul class="nav navbar-nav">
 
-                                    <li><a href="/">首页</a></li>
+                                    <li><a href="/homepage">首页</a></li>
                                     <li><a href="">图片</a></li>
                                     <li><a href="">视频</a></li>
                                     <li><a href="">其他</a></li>
@@ -285,7 +365,7 @@
                         <div class="side-menu right mobile-left-align">
                             <div class="nav-inner menu-socials social-icons">
                                 <div class="right">
-                                    <a href="#"><%- user %></a>
+                                    <a href="/settings"><%- user %></a>
                                     <a href="/user/logout">注销</a>
                                 </div>
                             </div>
@@ -301,7 +381,7 @@
         <div class="container">
             <div class="logo-container text-center">
                 <div class="logo-wrap">
-                    <a href="index.html">
+                    <a href="/homepage">
                         <img class="logo-dark" src="/images/logo2.png" alt="logo">
                         <h1 style="font-size:15px;">世界上最小的摄影交友网站</h1>
                     </a>
@@ -326,13 +406,13 @@
                         <article>
                             <a href="" class="entry-img">
                                 <p class="imgWrap">
-                                <img id="img1"  alt="">
+                                <img id="img1"  >
                                 </p>
-                                <span id="tag1" class="entry-category">Travel</span> <!--这里写图片标签-->
+                                <span id="tag1" class="entry-category"></span> <!--这里写图片标签-->
                             </a>
                             <div class="entry text-center">
-                                <h4 id="content1" class="entry-title uppercase"><a href="blog-single.html">revolve in mexico</a></h4>
-                                <span id="time1" class="entry-date">Jul 14, 2016</span>
+                                <h4 id="content1" class="entry-title uppercase"><a href=""></a></h4>
+                                <span id="time1" class="entry-date"></span>
                             </div>
                         </article>
                     </div>
@@ -341,12 +421,12 @@
                         <article>
                             <a href="" class="entry-img">
                                 <p class="imgWrap">
-                                    <img id="img2"  alt="">
+                                    <img id="img2"  >
                                 </p>
                                 <span id="tag2" class="entry-category">Travel</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 id="content2" class="entry-title uppercase"><a href="blog-single.html">Vinez Boat Ride</a></h4>
+                                <h4 id="content2" class="entry-title uppercase"><a href="">Vinez Boat Ride</a></h4>
                                 <span id="time2" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
@@ -354,14 +434,14 @@
 
                     <div class="gallery-cell">
                         <article>
-                            <a href="blog-single.html" class="entry-img">
-                                <p class="imgWrap">
-                                    <img id="img3"  alt="">
+                            <a href="" class="entry-img">
+                                <p class="imgWrap" >
+                                    <img id="img3"  >
                                 </p>
                                 <span id="tag3" class="entry-category">Lifestyle</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 id="content3" class="entry-title uppercase"><a href="blog-single.html">Welcome Cannes</a></h4>
+                                <h4 id="content3" class="entry-title uppercase"><a href="">Welcome Cannes</a></h4>
                                 <span id="time3" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
@@ -369,14 +449,14 @@
 
                     <div class="gallery-cell">
                         <article>
-                            <a href="blog-single.html" class="entry-img">
+                            <a href="" class="entry-img">
                                 <p class="imgWrap">
                                     <img id="img4"  alt="">
                                 </p>
                                 <span id="tag4" class="entry-category">Beauty</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 id="content4" class="entry-title uppercase"><a href="blog-single.html">Elegant &amp; Neutral</a></h4>
+                                <h4 id="content4" class="entry-title uppercase"><a href="">Elegant &amp; Neutral</a></h4>
                                 <span id="time4" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
@@ -384,28 +464,28 @@
 
                     <div class="gallery-cell">
                         <article>
-                            <a href="blog-single.html" class="entry-img">
+                            <a href="" class="entry-img">
                                 <p class="imgWrap">
                                     <img id="img5"  alt="">
                                 </p>
                                 <span id="tag5" class="entry-category">Lifestyle</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 id="content5" class="entry-title uppercase"><a href="blog-single.html">Must Haves</a></h4>
+                                <h4 id="content5" class="entry-title uppercase"><a href="">Must Haves</a></h4>
                                 <span id="time5" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
                     </div>
                     <div class="gallery-cell">
                         <article>
-                            <a href="blog-single.html" class="entry-img">
+                            <a href="" class="entry-img">
                                 <p class="imgWrap">
                                     <img id="img6"  alt="">
                                 </p>
                                 <span id="tag6" class="entry-category">Lifestyle</span>
                             </a>
                             <div class="entry text-center">
-                                <h4 id="content6" class="entry-title uppercase"><a href="blog-single.html">Must Haves</a></h4>
+                                <h4 id="content6" class="entry-title uppercase"><a href="">Must Haves</a></h4>
                                 <span id="time6" class="entry-date">Jul 14, 2016</span>
                             </div>
                         </article>
@@ -449,7 +529,7 @@
                                 </div>
                                 <form  class="form" style="    margin: 20px;" action="/upload/commit" method="get">
                                     <input type="text" placeholder="请输入图片描述" name="description">
-                                    <input type="text" placeholder="请输入标签（以分号隔开）" name="tag">
+                                    <input type="text" placeholder="请输入标签" name="tag">
                                     <button class="commitBtn" style="float:right;" >提交记录</button>
                                 </form>
                             </div>
@@ -476,7 +556,7 @@
                             <div class="heading-lines">
                                 <h3 class="widget-title heading">About Me</h3>
                             </div>
-                            <img src="/images/icon/1.png" style="width:110px;"  alt="">
+                            <img src="<%- userIcon %>" align="absmiddle" style="width:110px;margin-top:4px;border-radius:110px;">
                             <p class="mb-20 mt-20">
                                 <a style="    font-family: 'Raleway', sans-serif;font-size: 20px;cursor:hand"><%- user %></a></p>
                             <ul class="user_atten clearfix ">
@@ -525,31 +605,15 @@
                             <div class="heading-lines">
                                 <h3 class="widget-title heading">Categories</h3>
                             </div>
-                            <ul class="list-dividers">
+                            <ul style="font-size:15px;" id="categories" class="list-dividers">
                                 <li>
-                                    <a href="#">Lifestyle</a><span>(8)</span>
+                                    <a href="#">全部</a><span></span>
                                 </li>
-                                <li>
-                                    <a href="#">Travel</a><span>(14)</span>
-                                </li>
-                                <li>
-                                    <a href="#">Beauty</a><span>(5)</span>
-                                </li>
-                                <li>
-                                    <a href="#">Music</a><span>(3)</span>
-                                </li>
-                                <li>
-                                    <a href="#">Food</a><span>(7)</span>
-                                </li>
+
                             </ul>
                         </div>
 
-                        <!-- Ad banner -->
-                        <div class="widget custom-ad-banner">
-                            <a href="#">
-                                <img src="img/banner.jpg" alt="">
-                            </a>
-                        </div>
+
 
                         <!-- Recent Posts -->
                         <div class="widget recent-posts">
@@ -561,12 +625,12 @@
                                     <li class="entry-li">
                                         <article class="post-small clearfix">
                                             <div class="entry-img">
-                                                <a href="blog-single.html">
+                                                <a href="">
                                                     <img src="img/recent_1.jpg" alt="">
                                                 </a>
                                             </div>
                                             <div class="entry">
-                                                <h3 class="entry-title"><a href="magazine-single-article.html">Best Beaches in Sydney</a></h3>
+                                                <h3 class="entry-title"><a href="">Best Beaches in Sydney</a></h3>
                                                 <ul class="entry-meta list-inline">
                                                     <li class="entry-date">
                                                         <a href="#">19 Mar, 2016</a>
@@ -578,12 +642,12 @@
                                     <li class="entry-li">
                                         <article class="post-small clearfix">
                                             <div class="entry-img">
-                                                <a href="blog-single.html">
+                                                <a href="">
                                                     <img src="img/recent_2.jpg" alt="">
                                                 </a>
                                             </div>
                                             <div class="entry">
-                                                <h3 class="entry-title"><a href="magazine-single-article.html">First Summer Ice Cream</a></h3>
+                                                <h3 class="entry-title"><a href="">First Summer Ice Cream</a></h3>
                                                 <ul class="entry-meta list-inline">
                                                     <li class="entry-date">
                                                         <a href="#">16 Mar, 2016</a>
@@ -595,12 +659,12 @@
                                     <li class="entry-li">
                                         <article class="post-small clearfix">
                                             <div class="entry-img">
-                                                <a href="blog-single.html">
+                                                <a href="">
                                                     <img src="img/recent_3.jpg" alt="">
                                                 </a>
                                             </div>
                                             <div class="entry">
-                                                <h3 class="entry-title"><a href="magazine-single-article.html">Best Hat for Travel</a></h3>
+                                                <h3 class="entry-title"><a href="">Best Hat for Travel</a></h3>
                                                 <ul class="entry-meta list-inline">
                                                     <li class="entry-date">
                                                         <a href="#">16 Mar, 2016</a>
@@ -612,12 +676,12 @@
                                     <li class="entry-li">
                                         <article class="post-small clearfix">
                                             <div class="entry-img">
-                                                <a href="blog-single.html">
+                                                <a href="">
                                                     <img src="img/recent_4.jpg" alt="">
                                                 </a>
                                             </div>
                                             <div class="entry">
-                                                <h3 class="entry-title"><a href="magazine-single-article.html">New Look is Arrived</a></h3>
+                                                <h3 class="entry-title"><a href="">New Look is Arrived</a></h3>
                                                 <ul class="entry-meta list-inline">
                                                     <li class="entry-date">
                                                         <a href="#">16 Mar, 2016</a>
@@ -649,8 +713,36 @@
         </section> <!-- end content -->
 
 
+        <div id="dialogBg">
+        <div id="dialog" class="animated" style="width: 700px;height: 520px;margin: -250px 0 0 -350px;">
+            <img class="dialogIco" width="50" height="50" src="images/ico.png" alt="" />
+            <div class="dialogTop">
+                <a href="javascript:;" class="claseDialogBtn">关闭</a>
+            </div>
+            <div class="cropbox">
+                <div class="container" style="margin: 0;">
+                    <div class="imageBox">
+                        <div class="thumbBox"></div>
+                        <div class="spinner" style="display: none">Loading...</div>
+                    </div>
+                    <div class="action">
+                        <div class="new-contentarea tc">
+                            <a href="javascript:void(0)" class="btn btn-md btn-stroke" for="upload-file">
+                                上传图像
+                            </a>
+                            <input type="file" class="" name="upload-file" id="upload-file" />
+                        </div>
 
-
+                        <input type="button" id="btnZoomIn" class="btn btn-md btn-stroke" style="padding:10px 20px;" value="+"  >
+                        <input type="button" id="btnZoomOut" class="btn btn-md btn-stroke" style="padding:10px 20px;"  value="-" >
+                        <input type="button" id="btnCrop"  class="btn btn-md btn-stroke" style="padding:10px 20px;" value="裁切">
+                    </div>
+                    <div class="cropped"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 
         <!-- Footer Type-1 -->
         <footer class="footer footer-type-1 bg-dark">
@@ -687,6 +779,7 @@
 <script type="text/javascript" src="/javascripts/scripts.js"></script>
 <script type="text/javascript" src="/javascripts/webuploader.min.js"></script>
 <script type="text/javascript" src="/javascripts/webuploader.js"></script>
+<script type="text/javascript" src="/javascripts/cropbox.js"></script>
 <!-- Instafeed -->
 <script type="text/javascript">
     $(window).load(function() {

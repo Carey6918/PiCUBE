@@ -34,7 +34,7 @@ router.get('/login', function(req, res,next) {
                // console.log(req.session.user);
                // res.send(200);
                 //    res.redirect("/home");
-                //res.render('homepage', {title:'..'});
+                req.session.category = "全部";
                 res.redirect('/homepage');
             }
         }
@@ -67,6 +67,7 @@ router.get('/register', function(req, res,next) {
                             //callback(null);
                             req.session.user = req.query.username;
                             console.log(req.session.user);
+
                             res.redirect('/homepage');
 
                         }

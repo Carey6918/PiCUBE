@@ -1,0 +1,94 @@
+.masonryWrap {
+    min-height: 600px;
+    margin: 20px auto;
+}
+.masonryWrap .col {
+    float: left;
+    width: 320px;
+}
+.m-post {
+    box-shadow: 0px 3px 6px -2px rgba(0,0,0,0.3);
+}
+.m-post {
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+.m-post {
+    width: 300px;
+    margin: 0 10px 20px 10px;
+    background: #fdfdfd;
+}
+.m-post .userinfo {
+    height: 58px;
+    line-height: 58px;
+    border-bottom: 1px solid #ededef;
+}
+.m-post .userinfo .ava {
+    position: relative;
+    z-index: 5;
+    zoom: 1;
+}
+.m-post .userinfo .ava {
+    margin: 14px 10px 14px 14px;
+}
+.m-post .userinfo .ava {
+    float: left;
+    width: 30px;
+    height: 30px;
+    margin: 15px 10px 15px 15px;
+}
+.m-post .userinfo .ava img {
+    display: block;
+    width: 30px;
+    height: 30px;
+}
+
+
+.m-post .userinfo .nick {
+    float: left;
+    width: 125px;
+    color: #333;
+    font-size: 14px;
+    font-family: "Raleway", sans-serif;
+    text-align: left;
+}
+
+.m-post .img {
+    position: relative;
+    z-index: 5;
+    zoom: 1;
+    width: 100%;
+    max-height: 535px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.m-post .img img {
+    display: block;
+    width: 100%;
+    min-height: 120px;
+}
+.m-post .cnt {
+    padding: 0 15px;
+    color: #666;
+    margin-top: 12px;
+}
+.m-post .cnt .txt {
+    margin-bottom: 10px;
+}
+
+.m-post .cnt .txt {
+    overflow: hidden;
+    max-height: 78px;
+    line-height: 26px;
+    font-size: 14px;
+    font-family: "Raleway", sans-serif;
+    text-align: left;
+}
+.m-post .actbar {
+    height: 54px;
+    line-height: 54px;
+    border-top: 1px solid #ededef;
+}
+

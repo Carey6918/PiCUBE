@@ -41,6 +41,7 @@
                     $content.html("");
                     //console.log(data);
                     var picArr = new Array();
+                    var recordArr = new Array();
                     for(var i = 0 ; i < data.length;i++){
                     var $article = $( '<article class="entry-item large-post">'+
                         '<div class="entry-header">'+
@@ -77,7 +78,7 @@
                         '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].commentNums+ ' Comments</a>'+
                     '</li>'+
                     '<li>'+
-                    '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].likeNums+' <i class="fa fa-heart"></i>'+
+                    '<a id="likeNums'+i.toString()+'" >'+data[i].likeNums+' <i class="fa fa-heart" id="like'+i.toString()+'"></i>'+
                         '</a>'+
                         '</li>'+
                         '</ul>'+
@@ -86,7 +87,8 @@
                         '</article>').appendTo($content);
 
                     getPics(data[i].recordid,picArr,i);
-
+                        recordArr[i] = data[i].recordid;
+                        isLike(recordArr[i],i);
                     var $imgdiv = $('#imgdiv'+i.toString());
                     var def = picArr[i][0].path;
                     $imgdiv.css("background-image","url("+def+")");
@@ -107,7 +109,7 @@
                         var bc = picArr[thisid][nowNum].path;
                         $thisimg.css("background-image","url("+bc+")");
                     });
-                        $('#next'+i.toString()).click(function () {
+                    $('#next'+i.toString()).click(function () {
                             var thisid=$(this).attr("id");
                             thisid= thisid.replace("next","");
                             var $thisimg = $('#imgdiv'+thisid);
@@ -119,7 +121,9 @@
                             var bc = picArr[thisid][nowNum].path;
                             $thisimg.css("background-image","url("+bc+")");
                         });
+
                     }
+
                 },
                 error: function (){
                     console.log("x");
@@ -203,12 +207,30 @@
                 success: function (data) {
                     //console.log(data.category);
                     var $cate = $('#categories');
+                    $('#全部').click(function () {
+                        var thisid = $(this).attr("id");
+                        $.ajax({
+                            url: 'getRecords/setCategorySession',
+                            type: 'get',
+                            contentType: "application/json",
+                            data:{cateSession:thisid},
+                            traditional: false,
+                            async: false,
+                            success: function (data) {
+                                location.reload();
+                            },
+                            error: function () {
+                                console.log("加载失败！");
+                            }
+                        });
+                    });
                     for (var i = 0; i < data.category.length; i++) {
                         var category = data.category[i].category
                         if (category != "全部") {
-                            var $cateRadio = $('   <li> <a id="'+category+'" >'+category+'</a></li>');
+                            var $cateRadio = $('   <li> <a id="' + category + '" >' + category + '</a></li>');
 
                             $cateRadio.appendTo($cate);
+                        }
                             $('#'+category).click(function () {
                                 var thisid = $(this).attr("id");
                                 $.ajax({
@@ -226,7 +248,7 @@
                                     }
                                 });
                             });
-                        }
+
                     }
                 },
                 error: function () {
@@ -234,21 +256,71 @@
                 }
             });
         }
-        function setIcon(){
-            var $userIcon = $('#userIcon');
-            $userIcon.attr("class","bounceInDown");
-            $('#userIcon').click(function() {
-                className = $(this).attr('class');
-                $('#dialogBg').fadeIn(300);
-                $('#dialog').removeAttr('class').addClass('animated ' + className + '').fadeIn();
-            });
-            //关闭弹窗
-            $('.claseDialogBtn').click(function() {
-                $('#dialogBg').fadeOut(300, function () {
-                    $('#dialog').addClass('bounceOutUp').fadeOut();
-                });
+        function isLike(val,i) {
+
+            $.ajax({
+                url: 'detailInfo/isLike',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data: {recordid: val},
+                success: function (data) {
+                    $like = document.getElementById('like'+i.toString());
+                    if(data==true){
+
+                        $like.style.color = "red";
+                         $like.onclick = $like.onclick = function (ev) {
+                             $.ajax({
+                                 url: 'detailInfo/notsetLike',
+                                 type: 'get',
+                                 contentType: "application/json",
+                                 traditional: false,
+                                 async: false,
+                                 data:{recordid: val},
+                                 success: function (data) {
+                                     $likeNums = document.getElementById('likeNums'+i.toString());
+                                     nowlike = parseInt($likeNums.innerHTML);
+                                     nowlike-=1;
+                                     $likeNums.innerHTML = nowlike.toString()+' <i class="fa fa-heart" id="like'+i.toString()+'"></i>';
+                                     $like = document.getElementById('like'+i.toString());
+                                     $like.style.color = "#999999";
+                                     // isLike(val,i);
+                                 },
+                                 error: function(){
+                                     alert("取消赞失败！");
+                                 }
+                             })
+                         };
+                    }else{
+                        $like.style.color = "#999999";
+                        $like.onclick = function (ev) {
+                            $.ajax({
+                                url: 'detailInfo/setLike',
+                                type: 'get',
+                                contentType: "application/json",
+                                traditional: false,
+                                async: false,
+                                data:{recordid: val},
+                                success: function (data) {
+                                    $likeNums = document.getElementById('likeNums'+i.toString());
+                                    nowlike = parseInt($likeNums.innerHTML);
+                                    nowlike+=1;
+                                    $likeNums.innerHTML = nowlike.toString()+' <i class="fa fa-heart" id="like'+i.toString()+'"></i>';
+                                    $like = document.getElementById('like'+i.toString());
+                                    $like.style.color = "red";
+                                    // isLike(val,i);
+                                },
+                                error: function(){
+                                    alert("点赞失败！");
+                                }
+                            })
+                        };
+                    }
+                }
             });
         }
+
     </script>
     <!-- Css -->
     <link rel="stylesheet" href="/stylesheets/homepage/bootstrap.min.css" />
@@ -297,9 +369,9 @@
         <div class="search-wrap">
             <div class="search-inner">
                 <div class="search-cell">
-                    <form method="get">
+                    <form method="get" action="/search">
                         <div class="search-field-holder">
-                            <input type="search" class="form-control main-search-input" placeholder="Search for">
+                            <input type="search" class="form-control main-search-input" placeholder="Search for" name="tag">
                             <div class="search-submit-icon"><i class="icon icon_search"></i></div>
                             <input type="submit" class="search-submit" value="search">
                         </div>
@@ -344,7 +416,7 @@
                                 <ul class="nav navbar-nav">
 
                                     <li><a href="/homepage">首页</a></li>
-                                    <li><a href="">图片</a></li>
+                                    <li><a href="/hotpics">图片</a></li>
                                     <li><a href="">视频</a></li>
                                     <li><a href="">其他</a></li>
 
@@ -607,104 +679,12 @@
                             </div>
                             <ul style="font-size:15px;" id="categories" class="list-dividers">
                                 <li>
-                                    <a href="#">全部</a><span></span>
+                                    <a id="全部">全部</a><span></span>
                                 </li>
 
                             </ul>
                         </div>
 
-
-
-                        <!-- Recent Posts -->
-                        <div class="widget recent-posts">
-                            <div class="heading-lines">
-                                <h3 class="widget-title heading">Recent Posts</h3>
-                            </div>
-                            <div class="entry-list w-thumbs">
-                                <ul class="posts-list list-dividers">
-                                    <li class="entry-li">
-                                        <article class="post-small clearfix">
-                                            <div class="entry-img">
-                                                <a href="">
-                                                    <img src="img/recent_1.jpg" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="entry">
-                                                <h3 class="entry-title"><a href="">Best Beaches in Sydney</a></h3>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="entry-date">
-                                                        <a href="#">19 Mar, 2016</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </article>
-                                    </li>
-                                    <li class="entry-li">
-                                        <article class="post-small clearfix">
-                                            <div class="entry-img">
-                                                <a href="">
-                                                    <img src="img/recent_2.jpg" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="entry">
-                                                <h3 class="entry-title"><a href="">First Summer Ice Cream</a></h3>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="entry-date">
-                                                        <a href="#">16 Mar, 2016</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </article>
-                                    </li>
-                                    <li class="entry-li">
-                                        <article class="post-small clearfix">
-                                            <div class="entry-img">
-                                                <a href="">
-                                                    <img src="img/recent_3.jpg" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="entry">
-                                                <h3 class="entry-title"><a href="">Best Hat for Travel</a></h3>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="entry-date">
-                                                        <a href="#">16 Mar, 2016</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </article>
-                                    </li>
-                                    <li class="entry-li">
-                                        <article class="post-small clearfix">
-                                            <div class="entry-img">
-                                                <a href="">
-                                                    <img src="img/recent_4.jpg" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="entry">
-                                                <h3 class="entry-title"><a href="">New Look is Arrived</a></h3>
-                                                <ul class="entry-meta list-inline">
-                                                    <li class="entry-date">
-                                                        <a href="#">16 Mar, 2016</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </article>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Latest Tweets -->
-                        <div class="widget categories">
-                            <div class="heading-lines">
-                                <h3 class="widget-title heading">Latest Tweets</h3>
-                            </div>
-                            <div class="twitter-slider text-center">
-                                <i class="fa fa-twitter twitter-icon"></i>
-                                <a href="#">@deothemes</a>
-                                <div id="tweets"></div>
-                            </div>
-                        </div>
 
                     </aside> <!-- end sidebar -->
 

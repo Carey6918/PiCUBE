@@ -23,7 +23,8 @@ router.get('/', function(req, res, next) {
                 var fansNums = rows[0].fansNums;
                 var followNums = rows[0].followNums;
                 var recordNums = rows[0].recordNums;
-                res.render('userInfo', {username:req.query.username, fansNums: fansNums ,followNums:followNums,recordNums:recordNums });
+                var userIcon = rows[0].icon;
+                res.render('userInfo', {userIcon: userIcon,username:req.query.username, fansNums: fansNums ,followNums:followNums,recordNums:recordNums });
             }
         }
     });
@@ -65,10 +66,16 @@ router.get('/noFollow', function(req, res, next) {
         });
 });
 router.post('/getCategories', function(req, res, next) {
-    db.all("SELECT category FROM fansList where followUser = '"+req.session.user+"';",
+    db.all("SELECT distinct category FROM fansList where followUser = '"+req.session.user+"';",
         function (err,rows) {
         console.log(rows);
             res.json({category: rows});
+        });
+});
+router.get('/getIcon', function(req, res, next) {
+    db.all("SELECT icon  FROM User where userid = '"+req.query.user+"';",
+        function (err,rows) {
+            res.json(rows[0]);
         });
 });
 module.exports = router;

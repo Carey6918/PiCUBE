@@ -46,8 +46,33 @@ router.get('/submitComment', function(req, res, next) {
         });
 });
 router.get('/getComments', function(req, res, next) {
-    db.all("SELECT * FROM commentList where recordid = '"+req.query.recordid+"';",function (err,rows) {
+    db.all("SELECT icon,recordid,createrid,createTime,content FROM commentList, User where recordid = '"+req.query.recordid+"' and userid = createrid;",function (err,rows) {
         res.json(rows);
     });
+});
+router.get('/setLike',function (req,res,next) {
+    db.run("INSERT INTO likeList (userid, recordid) "+"VALUES (?,?);",[req.session.user,req.query.recordid],function (err,rows) {
+        db.run("UPDATE record SET likeNums = likeNums + 1 where recordid = '"+ req.query.recordid+"';");
+        res.json(true);
+    });
+});
+router.get('/notsetLike',function (req,res,next) {
+    db.run("DELETE FROM likeList where userid = '"+req.session.user+"' and recordid = '"+req.query.recordid+"';",function (err,rows) {
+        db.run("UPDATE record SET likeNums = likeNums - 1 where recordid = '"+ req.query.recordid+"';");
+        res.json(true);
+    });
+});
+router.get('/isLike',function (req,res) {
+       db.all("SELECT * FROM likeList where userid = '"+req.session.user+"' and recordid = '"+req.query.recordid+"';",function (err,rows) {
+       // console.log(req.query.recordid);
+       // console.log(rows[0]);
+       if(rows.length!=0){
+
+           res.json(true);
+
+       }else{
+           res.json(false);
+       }
+   }) ;
 });
 module.exports = router;

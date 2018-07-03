@@ -48,6 +48,7 @@
                     var $content = $('#content');
                     //console.log(data);
                     var picArr = new Array();
+                    var recordArr = new Array();
                     for(var i = 0 ; i < data.length;i++){
                         var $article = $( '<article class="entry-item large-post">'+
                             '<div class="entry-header">'+
@@ -81,10 +82,10 @@
                             '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].relayNums+ ' Relays</a>'+
                             '</li>'+
                             '<li class="entry-comments">'+
-                            '<a hhref="/detailInfo?recordid='+data[i].recordid+'">'+data[i].commentNums+ ' Comments</a>'+
+                            '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].commentNums+ ' Comments</a>'+
                             '</li>'+
                             '<li>'+
-                            '<a href="/detailInfo?recordid='+data[i].recordid+'">'+data[i].likeNums+' <i class="fa fa-heart"></i>'+
+                            '<a id="likeNums'+i.toString()+'" >'+data[i].likeNums+' <i class="fa fa-heart" id="like'+i.toString()+'"></i>'+
                             '</a>'+
                             '</li>'+
                             '</ul>'+
@@ -93,7 +94,8 @@
                             '</article>').appendTo($content);
 
                         getPics(data[i].recordid,picArr,i);
-
+                        recordArr[i] = data[i].recordid;
+                        isLike(recordArr[i],i);
                         var $imgdiv = $('#imgdiv'+i.toString());
                         var def = picArr[i][0].path;
                         $imgdiv.css("background-image","url("+def+")");
@@ -272,6 +274,68 @@
                 });
             });
         }
+        function isLike(val,i) {
+
+            $.ajax({
+                url: 'detailInfo/isLike',
+                type: 'get',
+                contentType: "application/json",
+                traditional: false,
+                async: false,
+                data: {recordid: val},
+                success: function (data) {
+                    $like = document.getElementById('like'+i.toString());
+                    if(data==true){
+
+                        $like.style.color = "red";
+                        $like.onclick = $like.onclick = function (ev) {
+                            $.ajax({
+                                url: 'detailInfo/notsetLike',
+                                type: 'get',
+                                contentType: "application/json",
+                                traditional: false,
+                                async: false,
+                                data:{recordid: val},
+                                success: function (data) {
+                                    $likeNums = document.getElementById('likeNums'+i.toString());
+                                    nowlike = parseInt($likeNums.innerHTML);
+                                    nowlike-=1;
+                                    $likeNums.innerHTML = nowlike.toString()+' <i class="fa fa-heart" id="like'+i.toString()+'"></i>';
+                                    $like = document.getElementById('like'+i.toString());
+                                    $like.style.color = "#999999";
+                                },
+                                error: function(){
+                                    alert("取消赞失败！");
+                                }
+                            })
+                        };
+                    }else{
+                        $like.style.color = "#999999";
+                        $like.onclick = function (ev) {
+                            $.ajax({
+                                url: 'detailInfo/setLike',
+                                type: 'get',
+                                contentType: "application/json",
+                                traditional: false,
+                                async: false,
+                                data:{recordid: val},
+                                success: function (data) {
+                                    $likeNums = document.getElementById('likeNums'+i.toString());
+                                    nowlike = parseInt($likeNums.innerHTML);
+                                    nowlike+=1;
+                                    $likeNums.innerHTML = nowlike.toString()+' <i class="fa fa-heart" id="like'+i.toString()+'"></i>';
+                                    $like = document.getElementById('like'+i.toString());
+                                    $like.style.color = "red";
+                                },
+                                error: function(){
+                                    alert("点赞失败！");
+                                }
+                            })
+                        };
+                    }
+                }
+            });
+        }
 
     </script>
 </head>
@@ -294,9 +358,9 @@
         <div class="search-wrap">
             <div class="search-inner">
                 <div class="search-cell">
-                    <form method="get">
+                    <form method="get" action="/search">
                         <div class="search-field-holder">
-                            <input type="search" class="form-control main-search-input" placeholder="Search for">
+                            <input type="search" class="form-control main-search-input" placeholder="Search for" name="tag">
                             <div class="search-submit-icon"><i class="icon icon_search"></i></div>
                             <input type="submit" class="search-submit" value="search">
                         </div>
@@ -341,7 +405,7 @@
                                 <ul class="nav navbar-nav">
 
                                     <li><a href="/homepage">首页</a></li>
-                                    <li><a href="">图片</a></li>
+                                    <li><a href="/hotpics">图片</a></li>
                                     <li><a href="">视频</a></li>
                                     <li><a href="">其他</a></li>
 
@@ -404,7 +468,7 @@
                             <div class="heading-lines">
                                 <h3 class="widget-title heading">Others</h3>
                             </div>
-                            <img src="/images/icon/1.png" style="width:110px;" alt="">
+                            <img src="<%- userIcon %>" style="width:110px;margin-top:4px;border-radius:110px;" alt="">
                             <p class="mb-20 mt-20">
                                 <a style="    font-family: 'Raleway', sans-serif;font-size: 20px;cursor:hand"><%- username %></a></p>
                             <ul class="user_atten clearfix ">

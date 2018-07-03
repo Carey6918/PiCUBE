@@ -20,7 +20,7 @@ router.get('/login', function(req, res,next) {
         if(err){                                         //错误就返回给原post处（login.html) 状态码为500的错误
             res.send(500);
             console.log(err);
-        }else if(!rows){                                 //查询不到用户名匹配信息，则用户名不存在
+        }else if(rows.length==0){                                 //查询不到用户名匹配信息，则用户名不存在
             req.session.error = '用户名不存在';
             res.send(404);                            //    状态码返回404
             //    res.redirect("/login");

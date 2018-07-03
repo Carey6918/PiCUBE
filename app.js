@@ -9,7 +9,6 @@ var bodyParser = require('body-parser');
 
 //每次新建一个routes里的js都要在这里加一个路径
 var index = require('./routes/index');
-var helloRouter = require('./routes/hello')
 var user = require('./routes/user');
 var homepage = require('./routes/homepage');
 var upload = require('./routes/upload');
@@ -17,6 +16,8 @@ var userInfo = require('./routes/userInfo');
 var getRecords = require('./routes/getRecords');
 var detailInfo = require('./routes/detailInfo');
 var settings = require('./routes/settings');
+var hotpics = require('./routes/hotpics');
+var search = require('./routes/search');
 var app = express();
 app.use(session({
     secret: "secret",
@@ -48,7 +49,6 @@ app.use(function (req, res, next) {
 });
 //这里也要加一个
 app.use('/', index);
-app.use('/hello', helloRouter);
 app.use('/user', user);
 app.use('/homepage', homepage);
 app.use('/upload',upload);
@@ -56,9 +56,11 @@ app.use('/userInfo',userInfo);
 app.use('/getRecords',getRecords);
 app.use('/detailInfo',detailInfo);
 app.use('/settings',settings);
+app.use('/hotpics', hotpics);
+app.use('/search', search);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
+    var err = new Error('Wrong Password');
     err.status = 404;
     // next(err);
     res.render('error');

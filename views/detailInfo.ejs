@@ -149,7 +149,7 @@
                     for(var i = 0 ;i < data.length;i++) {
                         $('<li> ' +
                             '<div class="comment-body"> ' +
-                            '<img src="img/comment_1.jpg" class="comment-avatar" > ' +
+                            '<img src="'+data[i].icon+'" class="comment-avatar" style="width: 70px;border-radius:70px;" > ' +
                             '<div class="comment-content"> ' +
                             '<span class="comment-author">'+data[i].createrid+'</span> ' +
                             '<span class="comment-date">'+data[i].createTime+'</span> ' +
@@ -183,14 +183,13 @@
         <div class="search-wrap">
             <div class="search-inner">
                 <div class="search-cell">
-                    <form method="get">
+                    <form method="get" action="/search">
                         <div class="search-field-holder">
-                            <input type="search" class="form-control main-search-input" placeholder="Search for">
+                            <input type="search" class="form-control main-search-input" placeholder="Search for" name="tag">
                             <div class="search-submit-icon"><i class="icon icon_search"></i></div>
                             <input type="submit" class="search-submit" value="search">
                         </div>
-                    </form>
-                </div>
+                    </form>                </div>
             </div>
             <i class="icon icon_close search-close" id="search-close"></i>
         </div> <!-- end fullscreen search -->
@@ -230,7 +229,7 @@
                                 <ul class="nav navbar-nav">
 
                                     <li><a href="/homepage">首页</a></li>
-                                    <li><a href="">图片</a></li>
+                                    <li><a href="/hotpics">图片</a></li>
                                     <li><a href="">视频</a></li>
                                     <li><a href="">其他</a></li>
 
@@ -390,9 +389,9 @@
                             <div class="heading-lines">
                                 <h3 class="widget-title heading">作者专栏</h3>
                             </div>
-                            <img src="/images/icon/1.png" style="width:110px;" alt="">
+                            <img src="<%- author.icon %>" style="width:110px;border-radius:110px;" alt="">
                             <p class="mb-20 mt-20">
-                                <a style="    font-family: 'Raleway', sans-serif;font-size: 20px;cursor:hand"><%- author.userid %></a></p>
+                                <a style="    font-family: 'Raleway', sans-serif;font-size: 20px;cursor:hand" href="/userInfo?username=<%- author.userid %>"><%- author.userid %></a></p>
                             <ul class="user_atten clearfix ">
                                 <li class="S_line1">
                                     <a bpfilter="page_frame" href="" class="S_txt1">
